@@ -1,0 +1,123 @@
+.problem {
+  padding: 80px 24px;
+  background: #0a0a12;
+}
+
+.problem-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.problem-card {
+  background: #13131f;
+  border: 1px solid #1e1e2e;
+  border-radius: 16px;
+  padding: 0 0 24px;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.25s, box-shadow 0.25s;
+  position: relative;
+}
+
+.problem-card:hover {
+  border-color: var(--pc);
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+}
+
+.problem-illust {
+  background: #0d0d14;
+  border-bottom: 1px solid #1e1e2e;
+  padding: 8px;
+}
+
+.prob-svg {
+  width: 100%;
+  height: 90px;
+  display: block;
+}
+
+/* SVG animations */
+.prob-line-anim {
+  animation: prob-grow 1.2s ease infinite alternate;
+}
+@keyframes prob-grow {
+  from { opacity: 0.3; transform: scaleX(0.85); transform-origin: left; }
+  to   { opacity: 1; transform: scaleX(1); }
+}
+
+.prob-x1 {
+  animation: prob-draw 0.5s ease forwards;
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+}
+.prob-x2 {
+  animation: prob-draw 0.5s 0.15s ease forwards;
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+}
+@keyframes prob-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+.prob-qmark {
+  animation: prob-shake 2.5s ease infinite;
+}
+@keyframes prob-shake {
+  0%,90%,100% { transform: translateX(0) rotate(0deg); }
+  92%         { transform: translateX(-3px) rotate(-8deg); }
+  96%         { transform: translateX(3px) rotate(8deg); }
+}
+
+.prob-wiggle {
+  animation: prob-spin 4s linear infinite;
+  transform-origin: 130px 44px;
+}
+@keyframes prob-spin {
+  from { stroke-dashoffset: 0; }
+  to   { stroke-dashoffset: -60; }
+}
+
+.prob-warn-anim {
+  animation: prob-warn 1.5s ease infinite;
+}
+@keyframes prob-warn {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50%     { opacity: 0.3; transform: scale(1.2); }
+}
+
+.prob-type {
+  animation: prob-type-in 3s steps(32) infinite;
+  overflow: hidden;
+  white-space: nowrap;
+}
+@keyframes prob-type-in {
+  from { clip-path: inset(0 100% 0 0); }
+  60%  { clip-path: inset(0 0% 0 0); }
+  90%  { clip-path: inset(0 0% 0 0); opacity: 1; }
+  100% { clip-path: inset(0 100% 0 0); opacity: 0; }
+}
+
+.problem-card-title {
+  font-size: 16px; font-weight: 700;
+  color: #fff; margin: 18px 20px 8px;
+}
+
+.problem-card-desc {
+  font-size: 13.5px; color: #555;
+  line-height: 1.75; margin: 0 20px;
+}
+
+.problem-card-bar {
+  height: 3px;
+  background: var(--pc);
+  margin: 18px 20px 0;
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.problem-card:hover .problem-card-bar {
+  transform: scaleX(1);
+}

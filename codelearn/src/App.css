@@ -1,0 +1,13 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #1e1e2e;
+  overflow: hidden;
+}
+
+.workspace {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}

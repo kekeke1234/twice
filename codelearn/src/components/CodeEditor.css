@@ -1,0 +1,41 @@
+.editor-wrap {
+  display: flex;
+  flex: 1;
+  background: #1e1e2e;
+  overflow-y: auto;
+  font-family: 'Consolas', 'Fira Code', 'Courier New', monospace;
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.editor-sidebar {
+  min-width: 46px;
+  background: #1e1e2e;
+  padding: 10px 0;
+  text-align: right;
+  user-select: none;
+  border-right: 1px solid #2e2e3e;
+}
+
+.line-num {
+  padding: 0 10px;
+  color: #4e4e6a;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.editor-code {
+  flex: 1;
+  padding: 10px 0 10px 16px;
+  overflow-x: auto;
+}
+
+.code-line {
+  white-space: pre;
+  line-height: 1.7;
+  min-height: 1.7em;
+}
+
+.code-line:hover {
+  background: rgba(255, 255, 255, 0.03);
+}

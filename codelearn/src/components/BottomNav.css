@@ -1,0 +1,67 @@
+.bottom-nav {
+  display: flex;
+  align-items: center;
+  background: #252535;
+  border-top: 1px solid #3a3a4a;
+  height: 46px;
+  padding: 0 12px;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.nav-arrow {
+  background: none;
+  border: 1px solid #3a3a4a;
+  color: #aaa;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.nav-arrow:hover:not(:disabled) {
+  background: #3a3a4a;
+  color: #fff;
+}
+
+.nav-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.nav-lessons {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+  overflow-x: auto;
+}
+
+.nav-lesson {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 12.5px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+  font-weight: 500;
+}
+
+.nav-lesson:hover {
+  background: #3a3a4a;
+  color: #ccc;
+}
+
+.nav-lesson.active {
+  background: #3a3a4a;
+  color: #fff;
+  font-weight: 600;
+}

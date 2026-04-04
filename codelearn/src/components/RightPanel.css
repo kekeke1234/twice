@@ -1,0 +1,253 @@
+.right-panel {
+  width: 320px;
+  min-width: 320px;
+  background: #fff;
+  border-left: 1px solid #e5e5e5;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.divider {
+  height: 1px;
+  background: #f0f0f0;
+  flex-shrink: 0;
+}
+
+/* 설명 영역 */
+.explanation {
+  padding: 18px 18px 16px;
+}
+
+.explain-breadcrumb {
+  font-size: 11px;
+  font-weight: 700;
+  color: #f0a500;
+  background: #fff8e1;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.explain-text {
+  font-size: 13.5px;
+  color: #333;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+.highlight-link {
+  color: #4e80f5;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.highlight-yellow {
+  background: #fff3a0;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+.explain-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #999;
+}
+
+.hint-btn {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: #555;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.hint-btn:hover {
+  background: #f5f5f5;
+}
+
+/* 레슨 평가 */
+.lesson-rating {
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rating-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.rating-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.rate-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rate-btn:hover {
+  background: #f5f5f5;
+}
+
+.rate-btn.active-up {
+  background: #e6f4ea;
+  border-color: #34a853;
+}
+
+.rate-btn.active-down {
+  background: #fce8e6;
+  border-color: #ea4335;
+}
+
+/* 관련 질문 */
+.related-section {
+  padding: 16px 18px;
+}
+
+.related-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.related-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #111;
+}
+
+.question-card {
+  background: #f8f8f8;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.question-card:hover {
+  background: #f0f0f0;
+}
+
+.question-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.question-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  color: #333;
+}
+
+.question-count {
+  font-size: 11px;
+  color: #888;
+}
+
+.question-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 4px;
+}
+
+.question-desc {
+  font-size: 11.5px;
+  color: #888;
+  line-height: 1.5;
+  font-family: 'Consolas', monospace;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.question-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.more-btn {
+  flex: 1;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 13px;
+  color: #444;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.more-btn:hover {
+  background: #e5e5e5;
+}
+
+.ask-btn {
+  flex: 1;
+  background: #111;
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 13px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.ask-btn:hover {
+  opacity: 0.85;
+}
+
+/* AI 설명 */
+.ai-section {
+  padding: 16px 18px;
+}
+
+.ai-header {
+  margin-bottom: 10px;
+}
+
+.ai-badge {
+  font-size: 13px;
+  font-weight: 700;
+  color: #7c6af7;
+  background: #f0eeff;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.ai-text {
+  font-size: 13px;
+  color: #888;
+  line-height: 1.6;
+}
