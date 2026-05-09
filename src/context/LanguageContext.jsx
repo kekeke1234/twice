@@ -6,7 +6,6 @@ const translations = {
   en: {
     features: 'Features',
     leaderboard: 'Leaderboard',
-    pricing: 'Pricing',
     signIn: 'Sign In',
     github: 'GitHub',
     getStarted: 'Get Started',
@@ -16,7 +15,6 @@ const translations = {
   ko: {
     features: '기능',
     leaderboard: '리더보드',
-    pricing: '가격',
     signIn: '로그인',
     github: '깃허브',
     getStarted: '시작하기',

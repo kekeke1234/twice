@@ -5,149 +5,307 @@ export function validateCCode(code) {
     return [{ line: 0, message: 'error: no input file (empty code)' }]
   }
 
-  const lines = code.split('\n')
-
-  if (!/#include\s*<[^>]+>/.test(code)) {
-    errors.push({ line: 0, message: "warning: missing #include <stdio.h> or other headers" })
-  }
-
   if (!/int\s+main\s*\(/.test(code)) {
     errors.push({ line: 0, message: 'error: no main() function found' })
     return errors
   }
 
-  let braceCount = 0
-  for (let i = 0; i < code.length; i++) {
-    if (code[i] === '{') braceCount++
-    if (code[i] === '}') braceCount--
+  if (!/#include\s*<[^>]+>/.test(code)) {
+    errors.push({ line: 0, message: "warning: missing #include <stdio.h> or other headers" })
   }
+
+  let lineNum = 1
+  const lineToPos = [0]
+  for (let i = 0; i < code.length; i++) {
+    if (code[i] === '\n') {
+      lineNum++
+      lineToPos.push(i + 1)
+    }
+  }
+
+  let braceCount = 0
+  let parenCount = 0
+  let inString = false
+  let inComment = false
+  let inBlockComment = false
+
+  for (let i = 0; i < code.length; i++) {
+    const ch = code[i]
+    const prev = i > 0 ? code[i - 1] : ''
+
+    if (inBlockComment) {
+      if (ch === '*' && code[i + 1] === '/') {
+        inBlockComment = false
+        i++
+      }
+      continue
+    }
+
+    if (inComment) {
+      if (ch === '\n') inComment = false
+      continue
+    }
+
+    if (ch === '"' && prev !== '\\') {
+      inString = !inString
+      continue
+    }
+
+    if (inString) continue
+
+    if (ch === '/' && code[i + 1] === '/') {
+      inComment = true
+      continue
+    }
+
+    if (ch === '/' && code[i + 1] === '*') {
+      inBlockComment = true
+      continue
+    }
+
+    if (ch === '{') braceCount++
+    if (ch === '}') braceCount--
+    if (ch === '(') parenCount++
+    if (ch === ')') parenCount--
+  }
+
   if (braceCount > 0) {
-    const errLine = findLine(lines, '{', true)
-    errors.push({ line: errLine, message: 'error: expected \'}\' at end of input (unclosed block)' })
+    errors.push({ line: 0, message: 'error: unclosed block' })
     return errors
   }
   if (braceCount < 0) {
-    const errLine = findLine(lines, '}', true)
-    errors.push({ line: errLine, message: 'error: unexpected \'}\' (extra closing brace)' })
+    errors.push({ line: 0, message: 'error: unexpected closing brace' })
+    return errors
+  }
+  if (parenCount > 0) {
+    errors.push({ line: 0, message: 'error: unclosed parenthesis' })
+    return errors
+  }
+  if (parenCount < 0) {
+    errors.push({ line: 0, message: 'error: unexpected closing parenthesis' })
     return errors
   }
 
-  const parenStack = []
-  for (let i = 0; i < code.length; i++) {
-    if (code[i] === '(') parenStack.push(i)
-    if (code[i] === ')') {
-      if (parenStack.length === 0) {
-        errors.push({ line: lineAt(lines, i), message: 'error: unexpected \')\' (extra closing parenthesis)' })
-        return errors
-      }
-      parenStack.pop()
-    }
-  }
-  if (parenStack.length > 0) {
-    const idx = parenStack[parenStack.length - 1]
-    errors.push({ line: lineAt(lines, idx), message: 'error: expected \')\' (unclosed parenthesis)' })
+  const mainStart = code.indexOf('int main')
+  if (mainStart === -1) {
+    errors.push({ line: 0, message: 'error: no main() function found' })
     return errors
   }
 
-  const mainBody = extractMainBody(code)
-  if (mainBody) {
-    const stmts = splitStatements(mainBody, lines)
-    for (const stmt of stmts) {
-      if (!stmt.text.trim()) continue
-      if (isBlockOrControl(stmt.text)) continue
-      if (stmt.text.trim().startsWith('//') || stmt.text.trim().startsWith('/*')) continue
-      if (isDeclaration(stmt.text)) continue
-      if (isStdCall(stmt.text)) continue
+  const mainBodyStart = code.indexOf('{', mainStart)
+  if (mainBodyStart === -1) {
+    errors.push({ line: 0, message: 'error: main() body not found' })
+    return errors
+  }
 
-      if (!stmt.text.trim().endsWith(';') && !stmt.text.trim().endsWith('}') && !stmt.text.trim().endsWith('{')) {
-        errors.push({ line: stmt.line, message: 'error: expected \';\' before \'}\' (missing semicolon)' })
-        return errors
-      }
-    }
+  let mainStartLine = 1
+  for (let i = 0; i <= mainBodyStart; i++) {
+    if (code[i] === '\n') mainStartLine++
+  }
 
-    const unknownCalls = findUnknownCalls(mainBody)
-    for (const call of unknownCalls) {
-      errors.push({ line: call.line, message: `warning: implicit declaration of function '${call.name}'` })
+  const mainBody = code.substring(mainBodyStart + 1)
+  const braceEnd = findMatchingBrace(mainBody, 0)
+  if (braceEnd === -1) {
+    errors.push({ line: mainStartLine, message: 'error: unclosed block in main' })
+    return errors
+  }
+
+  const actualMainBody = mainBody.substring(0, braceEnd)
+  const stmts = splitIntoStatements(actualMainBody, mainStartLine + 1)
+
+  for (const stmt of stmts) {
+    const trimmed = stmt.text.trim()
+    if (!trimmed) continue
+
+    if (trimmed.startsWith('//')) continue
+    if (trimmed.startsWith('/*')) continue
+
+    const lastChar = trimmed[trimmed.length - 1]
+    if (lastChar === '{' || lastChar === '}') continue
+
+    if (isBlockStatement(trimmed)) continue
+
+    if (lastChar !== ';' && lastChar !== '{' && lastChar !== '}') {
+      errors.push({ line: stmt.line, message: 'error: missing semicolon' })
+      return errors
     }
   }
 
   return errors
 }
 
-function findLine(lines, char, last) {
-  for (let i = 0; i < lines.length; i++) {
-    if (last && lines[i].includes(char)) return i + 1
-    if (!last && lines[i].includes(char)) return i + 1
-  }
-  return 0
-}
+function findMatchingBrace(str, start) {
+  let depth = 1
+  let inString = false
+  let inComment = false
+  let inBlockComment = false
 
-function lineAt(lines, pos) {
-  let count = 0
-  for (let i = 0; i < lines.length; i++) {
-    count += lines[i].length + 1
-    if (count > pos) return i + 1
-  }
-  return lines.length
-}
+  for (let i = start; i < str.length; i++) {
+    const ch = str[i]
+    const prev = i > 0 ? str[i - 1] : ''
 
-function extractMainBody(code) {
-  const match = code.match(/int\s+main\s*\([^)]*\)\s*\{([\s\S]*)\}/)
-  return match ? match[1] : ''
-}
+    if (inBlockComment) {
+      if (ch === '*' && str[i + 1] === '/') {
+        inBlockComment = false
+        i++
+      }
+      continue
+    }
 
-const STD_FUNCTIONS = ['printf', 'scanf', 'puts', 'gets', 'fopen', 'fclose', 'fgets', 'fprintf', 'fscanf',
-  'malloc', 'calloc', 'realloc', 'free', 'sizeof', 'exit', 'return', 'abs', 'rand', 'srand',
-  'strlen', 'strcpy', 'strcmp', 'strcat', 'strncpy', 'strncmp', 'memset', 'memcpy',
-  'atoi', 'atof', 'sprintf', 'sscanf']
+    if (inComment) {
+      if (ch === '\n') inComment = false
+      continue
+    }
 
-function findUnknownCalls(body) {
-  const calls = []
-  if (!body) return calls
-  const funcCallRegex = /\b([a-zA-Z_]\w*)\s*\(/g
-  let match
-  while ((match = funcCallRegex.exec(body)) !== null) {
-    const name = match[1]
-    if (name === 'if' || name === 'while' || name === 'for' || name === 'switch' || name === 'return') continue
-    if (STD_FUNCTIONS.includes(name)) continue
-    const before = body.substring(0, match.index)
-    const lineBreaks = (before.match(/\n/g) || []).length + 1
-    if (!calls.find(c => c.name === name)) {
-      calls.push({ name, line: lineBreaks + 1 })
+    if (ch === '"' && prev !== '\\') {
+      inString = !inString
+      continue
+    }
+
+    if (inString) continue
+
+    if (ch === '/' && str[i + 1] === '/') {
+      inComment = true
+      continue
+    }
+
+    if (ch === '/' && str[i + 1] === '*') {
+      inBlockComment = true
+      continue
+    }
+
+    if (ch === '{') {
+      depth++
+    }
+    if (ch === '}') {
+      depth--
+      if (depth === 0) return i
     }
   }
-  return calls
+  return -1
 }
 
-function isBlockOrControl(stmt) {
-  const t = stmt.trim()
-  return /^(if|else|while|for|do|switch|case|default)\b/.test(t) || t === '{' || t === '}'
-}
-
-function isDeclaration(stmt) {
-  return /^(int|char|float|double|long|short|unsigned|signed|void|struct|typedef|const|static)\b/.test(stmt.trim())
-}
-
-function isStdCall(stmt) {
-  return /^(printf|scanf|puts|gets|return|exit)\s*\(/.test(stmt.trim()) || /^\/\//.test(stmt.trim())
-}
-
-function splitStatements(body, allLines) {
+function splitIntoStatements(body, baseLineNum) {
   const stmts = []
-  let depth = 0
   let current = ''
-  let startLine = 0
-  let lineCount = 0
-  for (let i = 0; i < body.length; i++) {
+  let currentLine = baseLineNum
+  let stmtStartLine = baseLineNum
+  let depth = 0
+  let inString = false
+  let inComment = false
+  let inBlockComment = false
+  let i = 0
+
+  while (i < body.length) {
     const ch = body[i]
-    if (ch === '\n') lineCount++
-    if (ch === '{') { if (depth === 0 && current.trim()) stmts.push({ text: current, line: startLine }); depth++; current = ''; continue }
-    if (ch === '}') { depth--; if (current.trim()) stmts.push({ text: current, line: startLine }); if (depth === 0) { current = ''; startLine = lineCount + 1 }; continue }
-    if (depth > 0) continue
-    if (ch === ';') { stmts.push({ text: current + ';', line: startLine }); current = ''; startLine = lineCount + 1; continue }
-    if (current === '' && ch !== ' ' && ch !== '\t') startLine = lineCount + 1
-    current += ch
+    const prev = i > 0 ? body[i - 1] : ''
+
+    if (inBlockComment) {
+      if (ch === '*' && body[i + 1] === '/') {
+        inBlockComment = false
+        i += 2
+      } else {
+        i++
+      }
+      if (ch === '\n') currentLine++
+      continue
+    }
+
+    if (inComment) {
+      if (ch === '\n') {
+        inComment = false
+        currentLine++
+      }
+      i++
+      continue
+    }
+
+    if (ch === '"' && prev !== '\\') {
+      inString = !inString
+      current += ch
+      i++
+      continue
+    }
+
+    if (inString) {
+      current += ch
+      i++
+      continue
+    }
+
+    if (ch === '/' && body[i + 1] === '/') {
+      if (current.trim()) {
+        stmts.push({ text: current.trim(), line: stmtStartLine })
+        current = ''
+      }
+      inComment = true
+      i += 2
+      continue
+    }
+
+    if (ch === '/' && body[i + 1] === '*') {
+      if (current.trim()) {
+        stmts.push({ text: current.trim(), line: stmtStartLine })
+        current = ''
+      }
+      inBlockComment = true
+      i += 2
+      continue
+    }
+
+    if (ch === '\n') {
+      currentLine++
+      i++
+      continue
+    }
+
+    if (ch === '{' || ch === '}') {
+      if (current.trim()) {
+        stmts.push({ text: current.trim(), line: stmtStartLine })
+        current = ''
+        stmtStartLine = currentLine
+      }
+      stmts.push({ text: ch, line: currentLine })
+      depth += (ch === '{' ? 1 : -1)
+      stmtStartLine = currentLine + 1
+      i++
+      continue
+    }
+
+    if (depth === 0 && ch === ';') {
+      current += ch
+      stmts.push({ text: current.trim(), line: stmtStartLine })
+      current = ''
+      stmtStartLine = currentLine + 1
+      i++
+      continue
+    }
+
+    if (depth === 0) {
+      if (current === '' && (ch === ' ' || ch === '\t')) {
+        i++
+        continue
+      }
+      if (current === '') {
+        stmtStartLine = currentLine
+      }
+      current += ch
+    }
+
+    i++
   }
-  if (current.trim()) stmts.push({ text: current, line: startLine })
+
+  if (current.trim()) {
+    stmts.push({ text: current.trim(), line: stmtStartLine })
+  }
+
   return stmts
+}
+
+function isBlockStatement(stmt) {
+  const t = stmt.trim()
+  if (/^(if|else|while|for|do|switch|case|default)\b/.test(t)) return true
+  if (/^(int|char|float|double|long|short|unsigned|signed|void|struct|typedef|const|static|enum)\s+/.test(t)) return true
+  if (/^(return|break|continue)\b/.test(t)) return true
+  return false
 }

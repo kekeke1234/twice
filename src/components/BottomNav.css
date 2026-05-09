@@ -1,11 +1,18 @@
 .bottom-nav {
-  height: 24px;
   background-color: var(--carbon-surface);
   border-top: 1px solid var(--warm-charcoal);
   display: flex;
   align-items: center;
   padding: 0 12px;
-  gap: 24px;
+  gap: 16px;
+  min-height: 32px;
+}
+
+.status-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
 }
 
 .status-item {
@@ -14,6 +21,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-shrink: 0;
 }
 
 .status-item .dot {
@@ -25,4 +33,57 @@
 
 .text-emerald {
   color: var(--emerald-signal);
+}
+
+.viz-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1;
+  overflow-x: auto;
+  padding: 4px 0;
+}
+
+.viz-bar-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.viz-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--steel-slate);
+  letter-spacing: 0.5px;
+}
+
+.viz-chips {
+  display: flex;
+  gap: 6px;
+}
+
+.viz-chip {
+  font-family: var(--font-code);
+  font-size: 11px;
+  padding: 2px 8px;
+  background: var(--abyss-black);
+  border: 1px solid var(--warm-charcoal);
+  border-radius: 4px;
+  color: var(--snow-white);
+}
+
+.stack-chip {
+  border-color: var(--cobalt-primary);
+  color: var(--cobalt-primary);
+}
+
+.queue-chip {
+  border-color: var(--emerald-signal);
+  color: var(--emerald-signal);
+}
+
+.mem-chip {
+  border-color: var(--warm-parchment);
+  color: var(--warm-parchment);
 }

@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import LandingPage from './landing/LandingPage'
 import TopBar from './components/TopBar'
 import CodeEditor from './components/CodeEditor'
 import RightPanel from './components/RightPanel'
-import BottomNav from './components/BottomNav'
-import PricingPage from './pages/PricingPage'
 import { PROBLEMS } from './problems'
 import './App.css'
 import LeaderboardPage from './pages/LeaderboardPage'
@@ -12,6 +10,7 @@ import AuthPage from './pages/AuthPage'
 import { AuthProvider } from './context/AuthContext'
 import { LanguageProvider } from './context/LanguageContext'
 import { validateCCode } from './cValidator'
+import memoryChip from './assets/memory-chip.png'
 
 export default function App() {
   const savedId = localStorage.getItem('problemId')
@@ -24,6 +23,10 @@ export default function App() {
   const [terminalOutput, setTerminalOutput] = useState(['Waiting for execution...'])
   const [executionData, setExecutionData] = useState({ variables: {}, stack: [], queue: [], memory: [] })
   const [editorTheme, setEditorTheme] = useState(savedTheme || 'default')
+  const [rightPanelWidth, setRightPanelWidth] = useState(520)
+  const [bottomHeight, setBottomHeight] = useState(280)
+  const [isResizingH, setIsResizingH] = useState(false)
+  const [isResizingV, setIsResizingV] = useState(false)
 
   // Persist problem and code across refreshes
   useEffect(() => {
@@ -41,7 +44,7 @@ export default function App() {
   // Handle browser back/forward buttons and initial page load
   useEffect(() => {
     const path = window.location.pathname
-    const initialPage = path === '/ide' ? 'ide' : path === '/pricing' ? 'pricing' : path === '/leaderboard' ? 'leaderboard' : path === '/auth' ? 'auth' : 'landing'
+    const initialPage = path === '/ide' ? 'ide' : path === '/leaderboard' ? 'leaderboard' : path === '/auth' ? 'auth' : 'landing'
     setPage(initialPage)
     window.history.replaceState({ page: initialPage }, '')
 
@@ -61,6 +64,52 @@ export default function App() {
     setPage(p)
     window.history.pushState({ page: p }, '', p === 'landing' ? '/' : `/${p}`)
     window.scrollTo(0, 0)
+  }
+
+  const handleMouseMove = useCallback((e) => {
+    if (isResizingH) {
+      const newHeight = Math.max(150, Math.min(500, bottomHeight + e.clientY - startY.current))
+      setBottomHeight(newHeight)
+    }
+    if (isResizingV) {
+      const newWidth = Math.max(280, Math.min(900, rightPanelWidth + startX.current - e.clientX))
+      setRightPanelWidth(newWidth)
+    }
+  }, [isResizingH, isResizingV, bottomHeight, rightPanelWidth])
+
+  const handleMouseUp = useCallback(() => {
+    setIsResizingH(false)
+    setIsResizingV(false)
+    document.body.style.cursor = ''
+    document.body.style.userSelect = ''
+  }, [])
+
+  useEffect(() => {
+    if (isResizingH || isResizingV) {
+      window.addEventListener('mousemove', handleMouseMove)
+      window.addEventListener('mouseup', handleMouseUp)
+    }
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseup', handleMouseUp)
+    }
+  }, [handleMouseMove, handleMouseUp, isResizingH, isResizingV])
+
+  const startY = useRef(0)
+  const startX = useRef(0)
+
+  const startResizeH = (e) => {
+    setIsResizingH(true)
+    startY.current = e.clientY
+    document.body.style.cursor = 'ns-resize'
+    document.body.style.userSelect = 'none'
+  }
+
+  const startResizeV = (e) => {
+    setIsResizingV(true)
+    startX.current = e.clientX
+    document.body.style.cursor = 'ew-resize'
+    document.body.style.userSelect = 'none'
   }
 
   const selectProblem = (id) => {
@@ -169,22 +218,67 @@ export default function App() {
           <TopBar onHome={() => navigateTo('landing')} onRun={runCode} onLeaderboard={() => navigateTo('leaderboard')} onAuth={() => navigateTo('auth')} editorTheme={editorTheme} onThemeChange={setEditorTheme} />
           <div className="workspace">
             <CodeEditor code={code} onChange={setCode} theme={editorTheme} />
-            <RightPanel 
-              problem={currentProblem} 
+            <div className="resize-handle-v" onMouseDown={startResizeV} />
+            <RightPanel
+              problem={currentProblem}
               problems={PROBLEMS}
               onSelectProblem={selectProblem}
               terminalOutput={terminalOutput}
               executionData={executionData}
+              width={rightPanelWidth}
             />
           </div>
-          <BottomNav />
+          <div className="resize-handle-h" onMouseDown={startResizeH} />
+          <div className="bottom-viz" style={{ height: bottomHeight }}>
+            <div className="viz-section memory-viz-section">
+              <span className="viz-section-title">MEMORY</span>
+              <div className="viz-content memory-content">
+                {executionData.memory && executionData.memory.length > 0 ? (
+                  executionData.memory.map((mem, i) => (
+                    <div key={i} className="mem-chip-wrapper">
+                      <img src={memoryChip} alt="memory chip" className="mem-chip-img" />
+                      <div className="mem-chip-overlay">
+                        <span className="mem-chip-addr">{mem.address}</span>
+                        <span className="mem-chip-name">{mem.name}</span>
+                        <span className="mem-chip-value">{mem.value}</span>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <span className="viz-empty">No memory data</span>
+                )}
+              </div>
+            </div>
+            <div className="viz-section">
+              <span className="viz-section-title">STACK</span>
+              <div className="viz-content stack-content">
+                {executionData.stack && executionData.stack.length > 0 ? (
+                  executionData.stack.map((item, i) => (
+                    <div key={i} className="stack-block">{item}</div>
+                  ))
+                ) : (
+                  <span className="viz-empty">No stack data</span>
+                )}
+              </div>
+            </div>
+            <div className="viz-section">
+              <span className="viz-section-title">QUEUE</span>
+              <div className="viz-content queue-content">
+                {executionData.queue && executionData.queue.length > 0 ? (
+                  executionData.queue.map((item, i) => (
+                    <div key={i} className="queue-block">{item}</div>
+                  ))
+                ) : (
+                  <span className="viz-empty">No queue data</span>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
-      ) : page === 'pricing' ? (
-        <PricingPage onNavigate={navigateTo} />
       ) : page === 'leaderboard' ? (
         <LeaderboardPage onNavigate={navigateTo} />
       ) : (
-        <LandingPage onStart={() => navigateTo('ide')} onPricing={() => navigateTo('pricing')} onLeaderboard={() => navigateTo('leaderboard')} onAuth={() => navigateTo('auth')} />
+        <LandingPage onStart={() => navigateTo('ide')} onLeaderboard={() => navigateTo('leaderboard')} onAuth={() => navigateTo('auth')} />
       )}
     </AuthProvider>
     </LanguageProvider>

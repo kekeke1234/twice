@@ -1,7 +1,7 @@
 import './Navbar.css'
 import { useLanguage } from '../context/LanguageContext'
 
-export default function Navbar({ onStart, onPricing, onHome, onLeaderboard, onAuth }) {
+export default function Navbar({ onStart, onHome, onLeaderboard, onAuth }) {
   const { language, setLanguage, t } = useLanguage()
 
   return (
@@ -14,7 +14,6 @@ export default function Navbar({ onStart, onPricing, onHome, onLeaderboard, onAu
         <ul className="nav-links">
           <li><a href="#features">{t('features')}</a></li>
           <li><a style={{ cursor: 'pointer' }} onClick={onLeaderboard}>{t('leaderboard')}</a></li>
-          <li onClick={onPricing} style={{ cursor: 'pointer' }}><a>{t('pricing')}</a></li>
           <li><a style={{ cursor: 'pointer' }} onClick={onAuth}>{t('signIn')}</a></li>
           <li><a href="https://github.com" target="_blank" rel="noreferrer">{t('github')}</a></li>
           <li>

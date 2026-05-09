@@ -15,7 +15,6 @@ export default function LeaderboardPage({ onNavigate }) {
     <div className="leaderboard-page">
       <Navbar
         onStart={() => onNavigate('ide')}
-        onPricing={() => onNavigate('pricing')}
         onLeaderboard={() => onNavigate('leaderboard')}
         onHome={() => onNavigate('landing')}
         onAuth={() => onNavigate('auth')}
