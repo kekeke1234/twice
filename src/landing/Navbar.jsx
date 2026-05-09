@@ -1,6 +1,6 @@
 import './Navbar.css'
 
-export default function Navbar({ onStart, onPricing, onHome }) {
+export default function Navbar({ onStart, onPricing, onHome, onLeaderboard, onAuth }) {
   return (
     <nav className="navbar">
       <div className="navbar-inner">
@@ -10,7 +10,9 @@ export default function Navbar({ onStart, onPricing, onHome }) {
         </div>
         <ul className="nav-links">
           <li><a href="#features">Features</a></li>
+          <li><a style={{ cursor: 'pointer' }} onClick={onLeaderboard}>Leaderboard</a></li>
           <li onClick={onPricing} style={{ cursor: 'pointer' }}><a>Pricing</a></li>
+          <li><a style={{ cursor: 'pointer' }} onClick={onAuth}>Sign In</a></li>
           <li><a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a></li>
         </ul>
         <button className="nav-cta" onClick={onStart}>Get Started</button>

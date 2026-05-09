@@ -7,16 +7,36 @@ import BottomNav from './components/BottomNav'
 import PricingPage from './pages/PricingPage'
 import { PROBLEMS } from './problems'
 import './App.css'
+import LeaderboardPage from './pages/LeaderboardPage'
+import AuthPage from './pages/AuthPage'
+import { AuthProvider } from './context/AuthContext'
 
 export default function App() {
+  const savedId = localStorage.getItem('problemId')
+  const savedCode = localStorage.getItem('code')
+  const initialProblem = savedId ? PROBLEMS.find(p => p.id === savedId) || PROBLEMS[0] : PROBLEMS[0]
   const [page, setPage] = useState('landing')
-  const [currentProblem, setCurrentProblem] = useState(PROBLEMS[0])
-  const [code, setCode] = useState(PROBLEMS[0].starterCode)
+  const [currentProblem, setCurrentProblem] = useState(initialProblem)
+  const [code, setCode] = useState(savedCode || PROBLEMS[0].starterCode)
   const [terminalOutput, setTerminalOutput] = useState(['Waiting for execution...'])
   const [executionData, setExecutionData] = useState({ variables: {}, stack: [], queue: [], memory: [] })
 
-  // Handle browser back/forward buttons
+  // Persist problem and code across refreshes
   useEffect(() => {
+    localStorage.setItem('problemId', currentProblem.id)
+  }, [currentProblem.id])
+
+  useEffect(() => {
+    localStorage.setItem('code', code)
+  }, [code])
+
+  // Handle browser back/forward buttons and initial page load
+  useEffect(() => {
+    const path = window.location.pathname
+    const initialPage = path === '/ide' ? 'ide' : path === '/pricing' ? 'pricing' : path === '/leaderboard' ? 'leaderboard' : path === '/auth' ? 'auth' : 'landing'
+    setPage(initialPage)
+    window.history.replaceState({ page: initialPage }, '')
+
     const handlePopState = (event) => {
       if (event.state && event.state.page) {
         setPage(event.state.page)
@@ -25,9 +45,6 @@ export default function App() {
       }
     }
     window.addEventListener('popstate', handlePopState)
-    
-    // Initial state
-    window.history.replaceState({ page: 'landing' }, '')
     
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
@@ -132,28 +149,32 @@ export default function App() {
     }, 500)
   }
 
-  if (page === 'ide') {
-    return (
-      <div className="app">
-        <TopBar onHome={() => navigateTo('landing')} onRun={runCode} />
-        <div className="workspace">
-          <CodeEditor code={code} onChange={setCode} />
-          <RightPanel 
-            problem={currentProblem} 
-            problems={PROBLEMS}
-            onSelectProblem={selectProblem}
-            terminalOutput={terminalOutput}
-            executionData={executionData}
-          />
+  return (
+    <AuthProvider>
+      {page === 'auth' ? (
+        <AuthPage onNavigate={navigateTo} />
+      ) : page === 'ide' ? (
+        <div className="app">
+          <TopBar onHome={() => navigateTo('landing')} onRun={runCode} onLeaderboard={() => navigateTo('leaderboard')} onAuth={() => navigateTo('auth')} />
+          <div className="workspace">
+            <CodeEditor code={code} onChange={setCode} />
+            <RightPanel 
+              problem={currentProblem} 
+              problems={PROBLEMS}
+              onSelectProblem={selectProblem}
+              terminalOutput={terminalOutput}
+              executionData={executionData}
+            />
+          </div>
+          <BottomNav />
         </div>
-        <BottomNav />
-      </div>
-    )
-  }
-
-  if (page === 'pricing') {
-    return <PricingPage onNavigate={navigateTo} />
-  }
-
-  return <LandingPage onStart={() => navigateTo('ide')} onPricing={() => navigateTo('pricing')} />
+      ) : page === 'pricing' ? (
+        <PricingPage onNavigate={navigateTo} />
+      ) : page === 'leaderboard' ? (
+        <LeaderboardPage onNavigate={navigateTo} />
+      ) : (
+        <LandingPage onStart={() => navigateTo('ide')} onPricing={() => navigateTo('pricing')} onLeaderboard={() => navigateTo('leaderboard')} onAuth={() => navigateTo('auth')} />
+      )}
+    </AuthProvider>
+  )
 }

@@ -1,6 +1,6 @@
 import './TopBar.css'
 
-export default function TopBar({ onHome, onRun }) {
+export default function TopBar({ onHome, onRun, onLeaderboard, onAuth }) {
   return (
     <div className="top-bar">
       <div className="top-bar-left">
@@ -16,6 +16,8 @@ export default function TopBar({ onHome, onRun }) {
         </div>
       </div>
       <div className="top-bar-right">
+        <button className="leaderboard-btn" onClick={onLeaderboard}>Leaderboard</button>
+        <button className="auth-top-btn" onClick={onAuth}>Sign In</button>
         <button className="run-btn" onClick={onRun}>Run Code</button>
         <button className="share-btn">Share</button>
       </div>

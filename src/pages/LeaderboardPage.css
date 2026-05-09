@@ -1,0 +1,150 @@
+.leaderboard-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--abyss-black);
+}
+
+.leaderboard-content {
+  flex: 1;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 80px 24px 60px;
+}
+
+.leaderboard-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.leaderboard-header .overline {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--emerald-signal);
+  margin-bottom: 16px;
+}
+
+.leaderboard-title {
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--snow-white);
+  margin-bottom: 12px;
+}
+
+.leaderboard-sub {
+  font-size: 16px;
+  color: var(--steel-slate);
+}
+
+.leaderboard-table-wrapper {
+  background: var(--carbon-surface);
+  border: 1px solid var(--warm-charcoal);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-table thead {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.leaderboard-table th {
+  padding: 16px 20px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--steel-slate);
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--warm-charcoal);
+}
+
+.leaderboard-table td {
+  padding: 16px 20px;
+  font-size: 14px;
+  color: var(--snow-white);
+  border-bottom: 1px solid rgba(234, 179, 8, 0.15);
+}
+
+.leaderboard-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.leaderboard-table tbody tr {
+  transition: background 0.2s;
+}
+
+.leaderboard-table tbody tr:hover {
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.leaderboard-table tbody tr.top-1 {
+  background: rgba(255, 215, 0, 0.06);
+}
+
+.leaderboard-table tbody tr.top-2 {
+  background: rgba(192, 192, 192, 0.05);
+}
+
+.leaderboard-table tbody tr.top-3 {
+  background: rgba(205, 127, 50, 0.04);
+}
+
+.rank-cell {
+  width: 60px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.trophy {
+  font-size: 20px;
+}
+
+.name-cell {
+  font-weight: 600;
+}
+
+.solved-cell {
+  color: var(--emerald-signal);
+  font-weight: 700;
+}
+
+.time-cell {
+  font-family: var(--font-code);
+  color: var(--steel-slate);
+}
+
+.leaderboard-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--steel-slate);
+}
+
+.leaderboard-empty p {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.leaderboard-empty .auth-btn {
+  background: var(--emerald-signal);
+  color: var(--abyss-black);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.leaderboard-user {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--emerald-signal);
+}

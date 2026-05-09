@@ -79,6 +79,34 @@
   gap: 12px;
 }
 
+.leaderboard-btn {
+  background-color: transparent;
+  color: var(--emerald-signal);
+  border: 1px solid var(--emerald-signal);
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.leaderboard-btn:hover {
+  background-color: rgba(0, 217, 146, 0.1);
+}
+
+.auth-top-btn {
+  background: transparent;
+  color: var(--snow-white);
+  border: 1px solid var(--warm-charcoal);
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-top-btn:hover {
+  background: var(--carbon-surface);
+}
+
 .run-btn {
   background-color: var(--emerald-signal);
   color: var(--abyss-black);

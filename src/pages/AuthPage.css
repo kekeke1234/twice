@@ -1,0 +1,117 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--abyss-black);
+  padding: 24px;
+}
+
+.auth-card {
+  width: 400px;
+  background: var(--carbon-surface);
+  border: 1px solid var(--warm-charcoal);
+  border-radius: 12px;
+  padding: 40px;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 32px;
+  border-bottom: 2px solid var(--warm-charcoal);
+}
+
+.auth-tab {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--steel-slate);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+}
+
+.auth-tab.active {
+  color: var(--emerald-signal);
+  border-bottom-color: var(--emerald-signal);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--steel-slate);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 12px;
+}
+
+.auth-label:first-child {
+  margin-top: 0;
+}
+
+.auth-input {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--warm-charcoal);
+  border-radius: 6px;
+  padding: 12px 14px;
+  color: var(--snow-white);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.auth-input:focus {
+  border-color: var(--emerald-signal);
+}
+
+.auth-error {
+  color: var(--danger-coral);
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+.auth-btn {
+  margin-top: 20px;
+  background: var(--emerald-signal);
+  color: var(--abyss-black);
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.auth-btn:hover {
+  opacity: 0.85;
+}
+
+.auth-btn.secondary {
+  background: transparent;
+  color: var(--emerald-signal);
+  border: 1px solid var(--emerald-signal);
+  margin-top: 8px;
+}
+
+.auth-sub {
+  color: var(--steel-slate);
+  margin: 8px 0 24px;
+}
+
+.auth-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
