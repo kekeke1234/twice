@@ -7,10 +7,12 @@ import Target from './Target'
 import CTA from './CTA'
 import Footer from './Footer'
 
-export default function LandingPage({ onStart }) {
+export default function LandingPage({ onStart, onPricing }) {
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
+
   return (
     <div className="landing">
-      <Navbar onStart={onStart} />
+      <Navbar onStart={onStart} onPricing={onPricing} onHome={scrollToTop} />
       <Hero onStart={onStart} />
       <Problem />
       <Features />

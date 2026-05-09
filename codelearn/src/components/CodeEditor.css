@@ -1,41 +1,35 @@
-.editor-wrap {
+.code-editor {
+  flex: 1;
+  background-color: var(--carbon-surface);
   display: flex;
-  flex: 1;
-  background: #1e1e2e;
-  overflow-y: auto;
-  font-family: 'Consolas', 'Fira Code', 'Courier New', monospace;
-  font-size: 13.5px;
-  line-height: 1.7;
+  overflow: auto;
+  font-family: var(--font-code);
 }
 
-.editor-sidebar {
-  min-width: 46px;
-  background: #1e1e2e;
-  padding: 10px 0;
-  text-align: right;
-  user-select: none;
-  border-right: 1px solid #2e2e3e;
+.editor-gutter {
+  width: 48px;
+  background-color: var(--abyss-black);
+  border-right: 1px solid var(--warm-charcoal);
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.line-num {
-  padding: 0 10px;
-  color: #4e4e6a;
-  font-size: 12px;
-  line-height: 1.7;
+.line-number {
+  font-size: 13px;
+  color: var(--warm-charcoal);
+  line-height: 1.6;
 }
 
-.editor-code {
-  flex: 1;
-  padding: 10px 0 10px 16px;
-  overflow-x: auto;
+.editor-content {
+  padding: 16px 24px;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--snow-white);
 }
 
-.code-line {
-  white-space: pre;
-  line-height: 1.7;
-  min-height: 1.7em;
-}
-
-.code-line:hover {
-  background: rgba(255, 255, 255, 0.03);
+.editor-content code {
+  font-family: inherit;
 }

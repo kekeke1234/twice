@@ -1,0 +1,147 @@
+.pricing-page {
+  background-color: var(--abyss-black);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.pricing-content {
+  flex: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 24px;
+  width: 100%;
+}
+
+.pricing-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.pricing-header .overline {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 2.52px;
+  color: var(--steel-slate);
+  margin-bottom: 16px;
+}
+
+.pricing-title {
+  font-size: 48px;
+  line-height: 1.1;
+  letter-spacing: -0.9px;
+  margin-bottom: 16px;
+}
+
+.pricing-sub {
+  font-size: 18px;
+  color: var(--warm-parchment);
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.pricing-card {
+  background-color: var(--carbon-surface);
+  border: 1px solid var(--warm-charcoal);
+  border-radius: 8px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+.pricing-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--steel-slate);
+}
+
+.pricing-card.highlighted {
+  border: 2px solid var(--emerald-signal);
+  box-shadow: 0 0 30px rgba(0, 217, 146, 0.1);
+}
+
+.badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--emerald-signal);
+  color: var(--abyss-black);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.plan-name {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.plan-price {
+  font-size: 48px;
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+
+.plan-price .period {
+  font-size: 16px;
+  color: var(--steel-slate);
+}
+
+.plan-desc {
+  color: var(--warm-parchment);
+  margin-bottom: 32px;
+  font-size: 15px;
+}
+
+.plan-features {
+  list-style: none;
+  margin-bottom: 40px;
+  flex: 1;
+}
+
+.plan-features li {
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: var(--snow-white);
+}
+
+.plan-btn {
+  background-color: transparent;
+  border: 1px solid var(--warm-charcoal);
+  color: var(--snow-white);
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.plan-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.plan-btn.active {
+  background-color: var(--carbon-surface);
+  color: var(--voltagent-mint);
+  border: 1px solid var(--voltagent-mint);
+}
+
+.plan-btn.active:hover {
+  background-color: rgba(47, 214, 161, 0.1);
+}
+
+@media (max-width: 1024px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}

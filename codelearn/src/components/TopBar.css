@@ -1,122 +1,73 @@
-.topbar {
+.top-bar {
+  height: 48px;
+  background-color: var(--abyss-black);
+  border-bottom: 1px solid var(--warm-charcoal);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #252535;
-  border-bottom: 1px solid #3a3a4a;
-  height: 42px;
-  padding: 0 16px 0 0;
-  flex-shrink: 0;
-}
-
-.topbar-left {
-  display: flex;
-  align-items: center;
-  height: 100%;
-  gap: 0;
-}
-
-.lesson-title {
-  color: #aaa;
-  font-size: 13px;
   padding: 0 16px;
-  font-weight: 500;
-  border-right: 1px solid #3a3a4a;
-  height: 100%;
+}
+
+.top-bar-left {
   display: flex;
   align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.logo-icon {
+  color: var(--emerald-signal);
+  filter: drop-shadow(0 0 2px var(--emerald-signal));
+}
+
+.text-emerald {
+  color: var(--emerald-signal);
+}
+
+.file-tabs {
+  display: flex;
+  height: 100%;
 }
 
 .tab {
+  padding: 0 20px;
+  height: 48px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 0 14px;
-  height: 100%;
   font-size: 13px;
-  color: #ccc;
+  color: var(--steel-slate);
+  border-right: 1px solid var(--warm-charcoal);
   cursor: pointer;
-  border-right: 1px solid #3a3a4a;
-  background: transparent;
-  user-select: none;
 }
 
 .tab.active {
-  background: #1e1e2e;
-  color: #fff;
-  border-bottom: 2px solid #7c6af7;
+  background-color: var(--carbon-surface);
+  color: var(--snow-white);
+  border-bottom: 2px solid var(--emerald-signal);
 }
 
-.tab-icon {
-  font-size: 11px;
-  opacity: 0.6;
-}
-
-.tab-close {
-  font-size: 15px;
-  opacity: 0.5;
-  margin-left: 2px;
-  line-height: 1;
-}
-
-.tab-close:hover {
-  opacity: 1;
-}
-
-.topbar-right {
+.top-bar-right {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.top-icons {
-  display: flex;
-  gap: 2px;
-}
-
-.icon-btn {
-  background: none;
+.run-btn {
+  background-color: var(--emerald-signal);
+  color: var(--abyss-black);
   border: none;
-  color: #888;
-  font-size: 16px;
-  padding: 4px 7px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.15s, color 0.15s;
-}
-
-.icon-btn:hover {
-  background: #3a3a4a;
-  color: #fff;
-}
-
-.enroll-btn {
-  background: #7c6af7;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 6px 14px;
+  padding: 6px 16px;
+  border-radius: 4px;
   font-size: 13px;
   font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: opacity 0.15s;
 }
 
-.enroll-btn:hover {
-  opacity: 0.88;
-}
-
-.user-avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: #4e9af1;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+.share-btn {
+  background-color: transparent;
+  color: var(--snow-white);
+  border: 1px solid var(--warm-charcoal);
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 13px;
 }

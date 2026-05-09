@@ -1,13 +1,12 @@
 .app {
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  background: #1e1e2e;
-  overflow: hidden;
+  background-color: var(--abyss-black);
 }
 
 .workspace {
-  display: flex;
   flex: 1;
+  display: flex;
   overflow: hidden;
 }

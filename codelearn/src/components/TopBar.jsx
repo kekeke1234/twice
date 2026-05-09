@@ -2,23 +2,20 @@ import './TopBar.css'
 
 export default function TopBar({ onHome }) {
   return (
-    <div className="topbar">
-      <div className="topbar-left">
-        <span className="lesson-title" onClick={onHome} style={{ cursor: 'pointer' }}>C-Visualizer</span>
-        <div className="tab active">
-          <span className="tab-icon">◻</span>
-          main.c
-          <span className="tab-close">×</span>
+    <div className="top-bar">
+      <div className="top-bar-left" onClick={onHome} style={{ cursor: 'pointer' }}>
+        <span className="logo-icon">⚡</span>
+        <span className="logo-text">CodeLearn <span className="text-emerald">C</span></span>
+      </div>
+      <div className="top-bar-center">
+        <div className="file-tabs">
+          <div className="tab active">main.c</div>
+          <div className="tab">utils.h</div>
         </div>
       </div>
-      <div className="topbar-right">
-        <div className="top-icons">
-          <button className="icon-btn" title="설정">⚙</button>
-          <button className="icon-btn" title="저장">💾</button>
-          <button className="icon-btn" title="공유">↗</button>
-        </div>
-        <button className="enroll-btn">무제한 수강하기</button>
-        <div className="user-avatar">이</div>
+      <div className="top-bar-right">
+        <button className="run-btn">Run Code</button>
+        <button className="share-btn">Share</button>
       </div>
     </div>
   )

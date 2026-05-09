@@ -1,3 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Primary Colors */
+  --emerald-signal: #00d992;
+  --voltagent-mint: #2fd6a1;
+  --tailwind-emerald: rgba(16, 185, 129, 0.3);
+
+  /* Secondary & Accent */
+  --soft-purple: #818cf8;
+  --cobalt-primary: #306cce;
+  --deep-cobalt: #2554a0;
+  --ring-blue: rgba(59, 130, 246, 0.5);
+
+  /* Surface & Background */
+  --abyss-black: #050507;
+  --carbon-surface: #101010;
+  --warm-charcoal: #3d3a39;
+
+  /* Neutrals & Text */
+  --snow-white: #f2f2f2;
+  --pure-white: #ffffff;
+  --warm-parchment: #b8b3b0;
+  --steel-slate: #8b949e;
+  --fog-gray: #bdbdbd;
+  --mist-gray: #dcdcdc;
+  --near-white: #eeeeee;
+
+  /* Semantic */
+  --success-emerald: #008b00;
+  --warning-amber: #ffba00;
+  --danger-coral: #fb565b;
+  --info-teal: #4cb3d4;
+
+  /* Shadows */
+  --shadow-ambient: rgba(92, 88, 85, 0.2) 0px 0px 15px;
+  --shadow-dramatic: rgba(0, 0, 0, 0.7) 0px 20px 60px, rgba(148, 163, 184, 0.1) 0px 0px 0px 1px inset;
+
+  /* Font Stacks */
+  --font-heading: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-code: 'SFMono-Regular', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,11 +49,48 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--abyss-black);
+  color: var(--snow-white);
+  font-family: var(--font-body);
+  font-feature-settings: "calt", "rlig";
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
 }
 
-#root {
-  width: 100%;
-  height: 100vh;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--pure-white);
+  font-weight: 400;
+}
+
+code, pre {
+  font-family: var(--font-code);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.2s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--abyss-black);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--warm-charcoal);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--steel-slate);
 }

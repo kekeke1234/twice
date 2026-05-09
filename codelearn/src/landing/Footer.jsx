@@ -4,17 +4,37 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-inner">
-        <div className="footer-logo">
-          <span className="footer-logo-icon">◈</span>
-          C-Visualizer
+        <div className="footer-left">
+          <div className="footer-logo">
+            <span className="footer-logo-icon">⚡</span>
+            CodeLearn <span className="text-emerald">C</span>
+          </div>
+          <p className="footer-desc">The deep-space command terminal for learning C. Track memory with surgical precision.</p>
         </div>
-        <p className="footer-desc">더 효율적인 C언어 학습 플랫폼</p>
-        <div className="footer-meta">
-          <span>기획서 초안 작성일: 2026.04.04</span>
-          <span className="footer-dot">·</span>
-          <span>한국어 / English</span>
-          <span className="footer-dot">·</span>
-          <span>모바일 지원 예정</span>
+        
+        <div className="footer-links">
+          <div className="link-group">
+            <h4>Product</h4>
+            <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#docs">Documentation</a>
+          </div>
+          <div className="link-group">
+            <h4>Social</h4>
+            <a href="https://github.com">GitHub</a>
+            <a href="https://discord.com">Discord</a>
+            <a href="https://x.com">X / Twitter</a>
+          </div>
+        </div>
+      </div>
+      <div className="footer-bottom">
+        <div className="footer-inner">
+          <p>© 2026 CodeLearn. All rights reserved.</p>
+          <div className="footer-meta">
+            <span>v1.0.4-stable</span>
+            <span className="dot" />
+            <span>Built with Emerald Signal</span>
+          </div>
         </div>
       </div>
     </footer>

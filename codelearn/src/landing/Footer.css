@@ -1,44 +1,103 @@
 .footer {
-  background: #08080f;
-  border-top: 1px solid #1a1a2e;
-  padding: 40px 24px;
-  text-align: center;
+  background-color: var(--abyss-black);
+  border-top: 1px solid var(--warm-charcoal);
+  padding-top: 80px;
 }
 
 .footer-inner {
-  max-width: 1100px;
+  max-width: 1280px;
   margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.footer-left {
+  max-width: 400px;
 }
 
 .footer-logo {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 16px;
-  font-weight: 800;
-  color: #555;
-  margin-bottom: 8px;
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--snow-white);
+  margin-bottom: 16px;
 }
 
 .footer-logo-icon {
-  color: #3a3a5a;
+  color: var(--emerald-signal);
+  filter: drop-shadow(0 0 2px var(--emerald-signal));
 }
 
 .footer-desc {
-  font-size: 13px;
-  color: #333;
+  font-size: 15px;
+  color: var(--steel-slate);
+  line-height: 1.6;
+}
+
+.footer-links {
+  display: flex;
+  gap: 80px;
+}
+
+.link-group h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--snow-white);
+  margin-bottom: 24px;
+}
+
+.link-group a {
+  display: block;
+  font-size: 14px;
+  color: var(--steel-slate);
   margin-bottom: 12px;
+}
+
+.link-group a:hover {
+  color: var(--emerald-signal);
+}
+
+.footer-bottom {
+  margin-top: 80px;
+  border-top: 1px solid var(--warm-charcoal);
+  padding: 24px 0;
+}
+
+.footer-bottom .footer-inner {
+  align-items: center;
+}
+
+.footer-bottom p {
+  font-size: 13px;
+  color: var(--warm-charcoal);
 }
 
 .footer-meta {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 10px;
-  font-size: 12px;
-  color: #2a2a3a;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--warm-charcoal);
 }
 
-.footer-dot {
-  opacity: 0.4;
+.footer-meta .dot {
+  width: 4px;
+  height: 4px;
+  background-color: var(--warm-charcoal);
+  border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+  .footer-inner {
+    flex-direction: column;
+    gap: 48px;
+  }
+  .footer-links {
+    gap: 48px;
+  }
 }
