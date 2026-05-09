@@ -13,18 +13,18 @@
   --ring-blue: rgba(59, 130, 246, 0.5);
 
   /* Surface & Background */
-  --abyss-black: #050507;
-  --carbon-surface: #101010;
-  --warm-charcoal: #3d3a39;
+  --abyss-black: #fef08a; /* Changed to Yellow */
+  --carbon-surface: #fde047; /* Lighter Yellow */
+  --warm-charcoal: #eab308; /* Darker Yellow/Gold */
 
   /* Neutrals & Text */
-  --snow-white: #f2f2f2;
-  --pure-white: #ffffff;
-  --warm-parchment: #b8b3b0;
-  --steel-slate: #8b949e;
-  --fog-gray: #bdbdbd;
-  --mist-gray: #dcdcdc;
-  --near-white: #eeeeee;
+  --snow-white: #1c1917; /* Dark text for yellow bg */
+  --pure-white: #0c0a09; /* Darker text */
+  --warm-parchment: #44403c;
+  --steel-slate: #57534e;
+  --fog-gray: #78716c;
+  --mist-gray: #a8a29e;
+  --near-white: #d6d3d1;
 
   /* Semantic */
   --success-emerald: #008b00;

@@ -51,18 +51,18 @@
 
 .btn-primary {
   background-color: var(--carbon-surface);
-  color: var(--voltagent-mint);
+  color: var(--pure-white);
   border: none;
   padding: 12px 24px;
   border-radius: 6px;
   font-size: 16px;
   font-weight: 600;
-  outline: 1px solid var(--voltagent-mint);
+  outline: 1px solid var(--warm-charcoal);
 }
 
 .btn-primary:hover {
-  background-color: rgba(0, 0, 0, 0.2);
-  opacity: 0.8;
+  background-color: var(--warm-charcoal);
+  color: white;
 }
 
 .npm-install {

@@ -2,8 +2,7 @@
   flex: 1;
   background-color: var(--carbon-surface);
   display: flex;
-  overflow: auto;
-  font-family: var(--font-code);
+  overflow: hidden;
 }
 
 .editor-gutter {
@@ -14,22 +13,29 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  user-select: none;
 }
 
 .line-number {
-  font-size: 13px;
+  font-family: var(--font-code);
+  font-size: 12px;
   color: var(--warm-charcoal);
-  line-height: 1.6;
+  height: 22.4px; /* Matches 14px * 1.6 line-height */
+  display: flex;
+  align-items: center;
 }
 
-.editor-content {
-  padding: 16px 24px;
-  margin: 0;
+.editor-textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--snow-white);
+  font-family: var(--font-code);
   font-size: 14px;
   line-height: 1.6;
-  color: var(--snow-white);
-}
-
-.editor-content code {
-  font-family: inherit;
+  padding: 16px;
+  resize: none;
+  outline: none;
+  white-space: pre;
+  tab-size: 4;
 }

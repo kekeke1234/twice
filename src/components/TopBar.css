@@ -11,10 +11,36 @@
 .top-bar-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 14px;
+}
+
+.back-btn {
+  background: transparent;
+  border: 1px solid var(--warm-charcoal);
+  color: var(--snow-white);
+  padding: 4px 12px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+  background: var(--carbon-surface);
+  border-color: var(--steel-slate);
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
 }
 
 .logo-icon {
