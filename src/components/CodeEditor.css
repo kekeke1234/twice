@@ -39,3 +39,63 @@
   white-space: pre;
   tab-size: 4;
 }
+
+/* Monokai Theme */
+.code-editor.theme-monokai {
+  background-color: #272822;
+}
+.code-editor.theme-monokai .editor-gutter {
+  background-color: #1e1f1c;
+  border-right-color: #3e3d32;
+}
+.code-editor.theme-monokai .line-number {
+  color: #90908a;
+}
+.code-editor.theme-monokai .editor-textarea {
+  color: #f8f8f2;
+}
+
+/* GitHub Dark Theme */
+.code-editor.theme-github-dark {
+  background-color: #0d1117;
+}
+.code-editor.theme-github-dark .editor-gutter {
+  background-color: #161b22;
+  border-right-color: #30363d;
+}
+.code-editor.theme-github-dark .line-number {
+  color: #6e7681;
+}
+.code-editor.theme-github-dark .editor-textarea {
+  color: #c9d1d9;
+}
+
+/* Dracula Theme */
+.code-editor.theme-dracula {
+  background-color: #282a36;
+}
+.code-editor.theme-dracula .editor-gutter {
+  background-color: #1e1f29;
+  border-right-color: #44475a;
+}
+.code-editor.theme-dracula .line-number {
+  color: #6272a4;
+}
+.code-editor.theme-dracula .editor-textarea {
+  color: #f8f8f2;
+}
+
+/* Solarized Theme */
+.code-editor.theme-solarized {
+  background-color: #002b36;
+}
+.code-editor.theme-solarized .editor-gutter {
+  background-color: #073642;
+  border-right-color: #094752;
+}
+.code-editor.theme-solarized .line-number {
+  color: #586e75;
+}
+.code-editor.theme-solarized .editor-textarea {
+  color: #839496;
+}

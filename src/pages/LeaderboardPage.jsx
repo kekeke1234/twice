@@ -18,6 +18,7 @@ export default function LeaderboardPage({ onNavigate }) {
         onPricing={() => onNavigate('pricing')}
         onLeaderboard={() => onNavigate('leaderboard')}
         onHome={() => onNavigate('landing')}
+        onAuth={() => onNavigate('auth')}
       />
 
       <main className="leaderboard-content">

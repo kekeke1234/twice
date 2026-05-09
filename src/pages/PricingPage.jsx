@@ -28,7 +28,7 @@ export default function PricingPage({ onNavigate }) {
               <li>✓ Limited Stack Tracing</li>
               <li>✓ Community Support</li>
             </ul>
-            <button className="plan-btn">Get Started</button>
+            <button className="plan-btn" disabled>Get Started</button>
           </div>
 
           <div className="pricing-card highlighted">
@@ -42,7 +42,7 @@ export default function PricingPage({ onNavigate }) {
               <li>✓ Multi-file Projects</li>
               <li>✓ Priority Support</li>
             </ul>
-            <button className="plan-btn active">Try Pro Free</button>
+            <button className="plan-btn active" disabled>Try Pro Free</button>
           </div>
 
           <div className="pricing-card">
@@ -55,7 +55,7 @@ export default function PricingPage({ onNavigate }) {
               <li>✓ Dedicated Instance</li>
               <li>✓ Custom Onboarding</li>
             </ul>
-            <button className="plan-btn">Contact Sales</button>
+            <button className="plan-btn" disabled>Contact Sales</button>
           </div>
         </div>
       </main>

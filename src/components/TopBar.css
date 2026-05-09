@@ -125,3 +125,18 @@
   border-radius: 4px;
   font-size: 13px;
 }
+
+.theme-select {
+  background-color: var(--carbon-surface);
+  color: var(--snow-white);
+  border: 1px solid var(--warm-charcoal);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.theme-select:focus {
+  outline: none;
+  border-color: var(--emerald-signal);
+}

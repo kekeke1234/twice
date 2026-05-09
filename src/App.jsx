@@ -10,17 +10,20 @@ import './App.css'
 import LeaderboardPage from './pages/LeaderboardPage'
 import AuthPage from './pages/AuthPage'
 import { AuthProvider } from './context/AuthContext'
+import { LanguageProvider } from './context/LanguageContext'
 import { validateCCode } from './cValidator'
 
 export default function App() {
   const savedId = localStorage.getItem('problemId')
   const savedCode = localStorage.getItem('code')
+  const savedTheme = localStorage.getItem('editorTheme')
   const initialProblem = savedId ? PROBLEMS.find(p => p.id === savedId) || PROBLEMS[0] : PROBLEMS[0]
   const [page, setPage] = useState('landing')
   const [currentProblem, setCurrentProblem] = useState(initialProblem)
   const [code, setCode] = useState(savedCode || PROBLEMS[0].starterCode)
   const [terminalOutput, setTerminalOutput] = useState(['Waiting for execution...'])
   const [executionData, setExecutionData] = useState({ variables: {}, stack: [], queue: [], memory: [] })
+  const [editorTheme, setEditorTheme] = useState(savedTheme || 'default')
 
   // Persist problem and code across refreshes
   useEffect(() => {
@@ -30,6 +33,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('code', code)
   }, [code])
+
+  useEffect(() => {
+    localStorage.setItem('editorTheme', editorTheme)
+  }, [editorTheme])
 
   // Handle browser back/forward buttons and initial page load
   useEffect(() => {
@@ -153,14 +160,15 @@ export default function App() {
   }
 
   return (
+    <LanguageProvider>
     <AuthProvider>
       {page === 'auth' ? (
         <AuthPage onNavigate={navigateTo} />
       ) : page === 'ide' ? (
         <div className="app">
-          <TopBar onHome={() => navigateTo('landing')} onRun={runCode} onLeaderboard={() => navigateTo('leaderboard')} onAuth={() => navigateTo('auth')} />
+          <TopBar onHome={() => navigateTo('landing')} onRun={runCode} onLeaderboard={() => navigateTo('leaderboard')} onAuth={() => navigateTo('auth')} editorTheme={editorTheme} onThemeChange={setEditorTheme} />
           <div className="workspace">
-            <CodeEditor code={code} onChange={setCode} />
+            <CodeEditor code={code} onChange={setCode} theme={editorTheme} />
             <RightPanel 
               problem={currentProblem} 
               problems={PROBLEMS}
@@ -179,5 +187,6 @@ export default function App() {
         <LandingPage onStart={() => navigateTo('ide')} onPricing={() => navigateTo('pricing')} onLeaderboard={() => navigateTo('leaderboard')} onAuth={() => navigateTo('auth')} />
       )}
     </AuthProvider>
+    </LanguageProvider>
   )
 }
