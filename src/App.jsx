@@ -10,6 +10,7 @@ import './App.css'
 import LeaderboardPage from './pages/LeaderboardPage'
 import AuthPage from './pages/AuthPage'
 import { AuthProvider } from './context/AuthContext'
+import { validateCCode } from './cValidator'
 
 export default function App() {
   const savedId = localStorage.getItem('problemId')
@@ -66,36 +67,40 @@ export default function App() {
   }
 
   const runCode = () => {
+    const errors = validateCCode(code)
+    if (errors.length > 0) {
+      const lines = errors.map(e =>
+        e.line > 0 ? `  at main.c:${e.line}: ${e.message}` : `  ${e.message}`
+      )
+      setTerminalOutput(['$ gcc main.c -o main', '$ ./main', '', ...lines, '', 'Compilation failed.'])
+      setExecutionData({ variables: {}, stack: [], queue: [], memory: [] })
+      return
+    }
+
     setTerminalOutput(['$ gcc main.c -o main', '$ ./main'])
-    
+
     setTimeout(() => {
       const newExecutionData = { variables: {}, stack: [], queue: [], memory: [] }
       let baseAddr = 0x7ff00000
-      
-      // Simple variable extraction (int x = value)
+
       const varMatches = code.matchAll(/int\s+(\w+)\s*=\s*(\d+)/g)
       for (const match of varMatches) {
         const name = match[1]
         const val = match[2]
         newExecutionData.variables[name] = val
-        
-        // Add to memory map
         newExecutionData.memory.push({
           address: '0x' + (baseAddr).toString(16).toUpperCase(),
           name: name,
           value: val,
           type: 'int'
         })
-        baseAddr += 4 // Simulate 4-byte int
+        baseAddr += 4
       }
 
-      // Simple stack extraction (push(value))
       const stackMatches = code.matchAll(/push\((\d+)\)/g)
       for (const match of stackMatches) {
         const val = match[1]
         newExecutionData.stack.push(val)
-        
-        // Add stack items to memory too
         newExecutionData.memory.push({
           address: '0x' + (baseAddr).toString(16).toUpperCase(),
           name: `stack[${newExecutionData.stack.length - 1}]`,
@@ -105,7 +110,6 @@ export default function App() {
         baseAddr += 4
       }
 
-      // Simple queue extraction (enqueue(value))
       const queueMatches = code.matchAll(/enqueue\((\d+)\)/g)
       for (const match of queueMatches) {
         newExecutionData.queue.push(match[1])
@@ -113,7 +117,6 @@ export default function App() {
 
       setExecutionData(newExecutionData)
 
-      // Very simple simulation of C code execution
       if (currentProblem.id === 'hello-world') {
         if (code.includes('printf("Hello, World!\\n")') || code.includes('printf("Hello, World!")')) {
           setTerminalOutput(prev => [...prev, 'Hello, World!', '', 'Success! Problem solved.'])
