@@ -44,15 +44,16 @@
 }
 
 .problem-title {
-  font-size: 16px;
-  margin-bottom: 8px;
+  font-size: 18px;
+  margin-bottom: 12px;
   color: var(--emerald-signal);
+  font-weight: 700;
 }
 
 .problem-desc {
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--warm-parchment);
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--snow-white);
 }
 
 /* Visualization Styles */
@@ -289,7 +290,7 @@
   font-family: var(--font-code);
   background-color: var(--carbon-surface);
   color: var(--pure-white);
-  font-size: 40px;
+  font-size: 13px;
   line-height: 1.2;
   border: 1px inset var(--warm-charcoal);
   overflow: auto;

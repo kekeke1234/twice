@@ -1,10 +1,12 @@
 import { useAuth } from '../context/AuthContext'
+import { useLanguage } from '../context/LanguageContext'
 import Navbar from '../landing/Navbar'
 import Footer from '../landing/Footer'
 import './LeaderboardPage.css'
 
 export default function LeaderboardPage({ onNavigate }) {
   const { user } = useAuth()
+  const { t } = useLanguage()
   const users = JSON.parse(localStorage.getItem('users') || '[]')
   const rankings = users
     .map(u => ({ name: u.nickname, solved: u.solved, time: u.bestTime || '-' }))
@@ -22,26 +24,26 @@ export default function LeaderboardPage({ onNavigate }) {
 
       <main className="leaderboard-content">
         <header className="leaderboard-header">
-          <div className="overline">COMPETITION</div>
-          <h1 className="leaderboard-title">Leaderboard</h1>
-          <p className="leaderboard-sub">Top performers in C programming challenges.</p>
-          {user && <p className="leaderboard-user">Logged in as <strong>{user.nickname}</strong></p>}
+          <div className="overline">{t('competition')}</div>
+          <h1 className="leaderboard-title">{t('leaderboardTitle')}</h1>
+          <p className="leaderboard-sub">{t('leaderboardSub')}</p>
+          {user && <p className="leaderboard-user">{t('loggedInAs')} <strong>{user.nickname}</strong></p>}
         </header>
 
         {rankings.length === 0 ? (
           <div className="leaderboard-empty">
-            <p>No participants yet.</p>
-            <button className="auth-btn" onClick={() => onNavigate('auth')}>Sign up to join</button>
+            <p>{t('noParticipantsYet')}</p>
+            <button className="auth-btn" onClick={() => onNavigate('auth')}>{t('signUpToJoin')}</button>
           </div>
         ) : (
           <div className="leaderboard-table-wrapper">
             <table className="leaderboard-table">
               <thead>
                 <tr>
-                  <th>Rank</th>
-                  <th>Name</th>
-                  <th>Solved</th>
-                  <th>Best Time</th>
+                  <th>{t('rank')}</th>
+                  <th>{t('name')}</th>
+                  <th>{t('solved')}</th>
+                  <th>{t('bestTime')}</th>
                 </tr>
               </thead>
               <tbody>

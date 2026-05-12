@@ -1,3 +1,4 @@
+import { useLanguage } from '../context/LanguageContext'
 import './Target.css'
 
 function SelfLearnerSVG() {
@@ -78,46 +79,47 @@ function ReviewerSVG() {
 const targets = [
   {
     SVG: SelfLearnerSVG,
-    title: '혼자 공부하는 독학자',
-    desc: '강의나 책만으로 C언어를 배우는 독학자. 막히는 개념을 스스로 해결할 수 있도록 시각적 단서와 직관적인 설명을 제공합니다.',
-    tags: ['자기주도 학습', '포인터 극복', '기초 다지기'],
+    titleKey: 'selfLearnerTitle',
+    descKey: 'selfLearnerDesc',
+    tags: ['selfLearning', 'conquerPointers', 'buildFoundation'],
     color: '#56b6c2',
   },
   {
     SVG: StudentSVG,
-    title: 'C언어를 배우는 학생',
-    desc: '수업에서 C언어를 처음 접하는 학생. 교수님 설명만으로 이해하기 어려운 메모리 구조와 실행 흐름을 시각적으로 확인하세요.',
-    tags: ['수업 보조', '과제 도움', '시험 대비'],
+    titleKey: 'studentTitle',
+    descKey: 'studentDesc',
+    tags: ['classSupplement', 'homeworkHelp', 'examPrep'],
     color: '#7c6af7',
   },
   {
     SVG: ReviewerSVG,
-    title: '개념을 다시 잡고 싶은 분',
-    desc: 'C언어를 배웠지만 내부 원리가 여전히 모호한 분. 시각화를 통해 놓쳤던 개념을 빠르게 정리하세요.',
-    tags: ['복습', '메모리 구조', '디버깅 실력'],
+    titleKey: 'reviewerTitle',
+    descKey: 'reviewerDesc',
+    tags: ['review', 'memoryStructure', 'debuggingSkill'],
     color: '#c678dd',
   },
 ]
 
 export default function Target() {
+  const { t } = useLanguage()
   return (
     <section className="target" id="target">
       <div className="section-inner">
-        <div className="section-label">타겟 대상</div>
-        <h2 className="section-title">이런 분들을 위해 <span className="text-accent">만들었습니다</span></h2>
-        <p className="section-sub">독학자와 학생 모두가 막히는 지점 없이 C언어를 이해할 수 있도록 설계했습니다.</p>
+        <div className="section-label">{t('targetAudience')}</div>
+        <h2 className="section-title" dangerouslySetInnerHTML={{ __html: t('forSelfLearners') }} />
+        <p className="section-sub">{t('forAllLearners')}</p>
         <div className="target-cards">
-          {targets.map((t) => (
-            <div key={t.title} className="target-card" style={{ '--tc': t.color }}>
+          {targets.map((target) => (
+            <div key={target.titleKey} className="target-card" style={{ '--tc': target.color }}>
               <div className="target-illust">
-                <t.SVG />
+                <target.SVG />
               </div>
               <div className="target-card-body">
-                <h3 className="target-card-title">{t.title}</h3>
-                <p className="target-card-desc">{t.desc}</p>
+                <h3 className="target-card-title">{t(target.titleKey)}</h3>
+                <p className="target-card-desc">{t(target.descKey)}</p>
                 <div className="target-tags">
-                  {t.tags.map((tag) => (
-                    <span key={tag} className="target-tag">{tag}</span>
+                  {target.tags.map((tagKey) => (
+                    <span key={tagKey} className="target-tag">{t(tagKey)}</span>
                   ))}
                 </div>
               </div>

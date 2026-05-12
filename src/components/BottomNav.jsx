@@ -1,6 +1,8 @@
+import { useLanguage } from '../context/LanguageContext'
 import './BottomNav.css'
 
 export default function BottomNav({ executionData }) {
+  const { t } = useLanguage()
   const { variables, stack, queue, memory } = executionData || {}
   const hasData = (memory && memory.length > 0) || (stack && stack.length > 0) || (queue && queue.length > 0) || (variables && Object.keys(variables).length > 0)
 
@@ -9,7 +11,7 @@ export default function BottomNav({ executionData }) {
       <div className="status-group">
         <div className="status-item">
           <span className="dot" />
-          Connected to Debugger
+          {t('connectedToDebugger')}
         </div>
         <div className="status-item">UTF-8</div>
         <div className="status-item">C11</div>
@@ -63,7 +65,7 @@ export default function BottomNav({ executionData }) {
         </div>
       ) : (
         <div className="status-item text-emerald">
-          VoltAgent Engine v1.0.4
+          {t('voltAgentEngine')}
         </div>
       )}
     </div>

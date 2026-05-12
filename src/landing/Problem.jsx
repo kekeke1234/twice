@@ -1,3 +1,4 @@
+import { useLanguage } from '../context/LanguageContext'
 import './Problem.css'
 
 function TextOnlyIllust() {
@@ -23,7 +24,7 @@ function TextOnlyIllust() {
   )
 }
 
-function PointerIllust() {
+function PointerIllust({ t }) {
   return (
     <svg viewBox="0 0 160 90" className="prob-svg">
       {/* 변수 박스 */}
@@ -43,7 +44,7 @@ function PointerIllust() {
       <text x="92" y="22" textAnchor="middle" fill="#e5534b" fontSize="18" className="prob-qmark">?</text>
 
       {/* 아래 설명 */}
-      <text x="80" y="76" textAnchor="middle" fill="#444" fontSize="8" fontFamily="sans-serif">포인터가 어딜 가리키나요?</text>
+      <text x="80" y="76" textAnchor="middle" fill="#444" fontSize="8" fontFamily="sans-serif">{t('whereDoesPointerPoint')}</text>
     </svg>
   )
 }
@@ -73,39 +74,40 @@ function SegfaultIllust() {
 const problems = [
   {
     Illust: TextOnlyIllust,
-    title: '텍스트만으론 부족해요',
-    desc: '기존 C언어 교육은 설명과 코드 스니펫만으로 구성되어, 메모리가 실제로 어떻게 변하는지 눈으로 볼 수 없습니다.',
+    titleKey: 'textOnlyProblem',
+    descKey: 'textOnlyProblemDesc',
     color: '#e5534b',
   },
   {
     Illust: PointerIllust,
-    title: '포인터, 왜 이렇게 어렵죠?',
-    desc: '포인터, 스택, 힙 같은 추상적 개념을 머릿속으로만 상상해야 해서 입문자에게 높은 학습 장벽이 됩니다.',
+    titleKey: 'pointerProblem',
+    descKey: 'pointerProblemDesc',
     color: '#c678dd',
   },
   {
     Illust: SegfaultIllust,
-    title: 'Segmentation Fault의 공포',
-    desc: '오류가 어디서 왜 났는지 텍스트 메시지만으로 파악하기 어렵고, 디버깅 과정이 막막하게 느껴집니다.',
+    titleKey: 'segfaultProblem',
+    descKey: 'segfaultProblemDesc',
     color: '#f5c518',
   },
 ]
 
 export default function Problem() {
+  const { t } = useLanguage()
   return (
     <section className="problem" id="problem">
       <div className="section-inner">
-        <div className="section-label">왜 C-Visualizer인가</div>
-        <h2 className="section-title">기존 C언어 학습의 <span className="text-accent">3가지 문제</span></h2>
-        <p className="section-sub">독학자와 학생들이 C언어에서 가장 많이 막히는 지점들입니다.</p>
+        <div className="section-label">{t('whyCVisualizer')}</div>
+        <h2 className="section-title" dangerouslySetInnerHTML={{ __html: t('problemsWithLearningC') }} />
+        <p className="section-sub">{t('problemsDesc')}</p>
         <div className="problem-cards">
           {problems.map((p) => (
-            <div key={p.title} className="problem-card" style={{ '--pc': p.color }}>
+            <div key={p.titleKey} className="problem-card" style={{ '--pc': p.color }}>
               <div className="problem-illust">
-                <p.Illust />
+                <p.Illust t={t} />
               </div>
-              <h3 className="problem-card-title">{p.title}</h3>
-              <p className="problem-card-desc">{p.desc}</p>
+              <h3 className="problem-card-title">{t(p.titleKey)}</h3>
+              <p className="problem-card-desc">{t(p.descKey)}</p>
               <div className="problem-card-bar" />
             </div>
           ))}

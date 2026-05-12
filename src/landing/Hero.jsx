@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useLanguage } from '../context/LanguageContext'
 import './Hero.css'
 
 const codeLines = [
@@ -12,6 +13,7 @@ const codeLines = [
 ]
 
 export default function Hero({ onStart }) {
+  const { t } = useLanguage()
   const [activeLine, setActiveLine] = useState(1)
 
   useEffect(() => {
@@ -25,15 +27,11 @@ export default function Hero({ onStart }) {
     <section className="hero">
       <div className="hero-inner">
         <div className="hero-content">
-          <div className="hero-overline">AI-POWERED C LEARNING</div>
-          <h1 className="hero-title">
-            Visualize the <span className="text-emerald">Memory</span> of Your Code
-          </h1>
-          <p className="hero-sub">
-            The deep-space command terminal for learning C. Track pointers, stack frames, and heap allocations in real-time with surgical precision.
-          </p>
+          <div className="hero-overline">{t('heroOverline')}</div>
+          <h1 className="hero-title" dangerouslySetInnerHTML={{ __html: t('heroTitle') }} />
+          <p className="hero-sub">{t('heroSub')}</p>
           <div className="hero-actions">
-            <button className="btn-primary" onClick={onStart}>Launch Workspace</button>
+            <button className="btn-primary" onClick={onStart}>{t('launchWorkspace')}</button>
             <div className="npm-install">
               <code>npm create codelearn@latest</code>
               <button className="copy-btn">❐</button>
@@ -60,11 +58,11 @@ export default function Hero({ onStart }) {
               ))}
             </div>
           </div>
-          
+
           <div className="hero-card-accent">
             <div className="card-header">
-              <span className="label">LIVE HEAP MAP</span>
-              <span className="status">● ACTIVE</span>
+              <span className="label">{t('liveHeapMap')}</span>
+              <span className="status">● {t('active')}</span>
             </div>
             <div className="heap-viz">
               <div className="heap-node active">

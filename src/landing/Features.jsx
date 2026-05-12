@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useLanguage } from '../context/LanguageContext'
 import './Features.css'
 
 /* ── Feature 1: Live Memory Visualizer ── */
@@ -9,7 +10,7 @@ const MEM_STEPS = [
   { line: 4, label: 'malloc(8)',       stack: [{ n:'h', v:'→ heap',   c:'#e5c07b', ptr:true },{ n:'p', v:'→ x', c:'#c678dd', ptr:true },{ n:'x', v:'42', c:'#56b6c2' }], heap: [{ n:'[8B]', c:'#e5c07b' }] },
 ]
 
-function MemPreview() {
+function MemPreview({ t }) {
   const [idx, setIdx] = useState(0)
   useEffect(() => {
     const t = setInterval(() => setIdx(i => (i + 1) % MEM_STEPS.length), 1800)
@@ -28,7 +29,7 @@ function MemPreview() {
         ))}
       </div>
       <div className="fp-mem-panel">
-        <div className="fp-seg-title">Stack</div>
+        <div className="fp-seg-title">{t('stack')}</div>
         <div className="fp-seg-cells">
           {s.stack.map((cell, i) => (
             <div key={`${cell.n}-${idx}`}
@@ -39,10 +40,10 @@ function MemPreview() {
             </div>
           ))}
         </div>
-        <div className="fp-seg-title heap">Heap</div>
+        <div className="fp-seg-title heap">{t('heap')}</div>
         <div className="fp-seg-cells">
           {s.heap.length === 0
-            ? <div className="fp-empty">비어있음</div>
+            ? <div className="fp-empty">{t('empty')}</div>
             : s.heap.map((cell, i) => (
               <div key={`h-${idx}-${i}`} className="fp-cell fp-heap-cell"
                 style={{ '--cc': cell.c, animationDelay: `${i * 0.06}s` }}>
@@ -52,7 +53,6 @@ function MemPreview() {
             ))
           }
         </div>
-        {/* step dots */}
         <div className="fp-dots">
           {MEM_STEPS.map((_, i) => (
             <div key={i} className={`fp-dot ${i === idx ? 'on' : ''}`} onClick={() => setIdx(i)} />
@@ -71,7 +71,7 @@ const EXEC_STEPS = [
   { code: 'printf("%d", y);',  vars: { x: '10', ptr: '&x', y: '15' },note: '"15" 출력됨 ✓' },
 ]
 
-function StepPreview() {
+function StepPreview({ t }) {
   const [step, setStep] = useState(0)
   const [playing, setPlaying] = useState(true)
   useEffect(() => {
@@ -104,7 +104,7 @@ function StepPreview() {
         ))}
       </div>
       <div className="fp-vars-box">
-        <div className="fp-vars-title">변수 상태</div>
+        <div className="fp-vars-title">{t('variableState')}</div>
         <div className="fp-vars">
           {Object.entries(cur.vars).map(([k, v]) => (
             <div key={`${k}-${step}`} className="fp-var">
@@ -120,11 +120,11 @@ function StepPreview() {
 }
 
 /* ── Feature 3: Human-Readable UI ── */
-function HumanPreview() {
+function HumanPreview({ t }) {
   const [phase, setPhase] = useState(0)
   useEffect(() => {
-    const t = setInterval(() => setPhase(p => (p + 1) % 3), 2000)
-    return () => clearInterval(t)
+    const id = setInterval(() => setPhase(p => (p + 1) % 3), 2000)
+    return () => clearInterval(id)
   }, [])
   const messages = [
     { type: 'error', icon: '💥', title: 'Segmentation Fault', line: '8번째 줄',
@@ -152,7 +152,7 @@ function HumanPreview() {
         <p className="fp-err-body">{m.body}</p>
         {m.fix && (
           <div className="fp-err-fix">
-            <span className="fp-fix-lbl">수정 힌트</span>
+            <span className="fp-fix-lbl">{t('fixHintLabel')}</span>
             <code>{m.fix}</code>
           </div>
         )}
@@ -169,35 +169,33 @@ function HumanPreview() {
 /* ── Main Features component ── */
 const features = [
   {
-    num: '01', title: 'Live Memory Visualizer',
-    desc: '코드의 각 줄이 실행될 때 Stack / Heap / Data 세그먼트가 실시간으로 어떻게 변하는지 시각화합니다. 포인터가 가리키는 주소, 변수의 생명주기를 한눈에 확인하세요.',
-    tags: ['Stack', 'Heap', 'Data 세그먼트', '포인터 추적'],
+    num: '01', titleKey: 'liveMemoryVisualizer', descKey: 'liveMemoryVisualizerDesc',
+    tags: ['stack', 'heap', 'dataSegment', 'pointerTracking'],
     Preview: MemPreview,
   },
   {
-    num: '02', title: '단계별 실행 흐름 시각화',
-    desc: '코드를 한 줄씩 실행하며 변수 변화와 제어 흐름을 직접 따라갑니다. 재생/일시정지로 원하는 속도에 맞춰 학습하세요.',
-    tags: ['Step-by-Step', '변수 추적', '실행 흐름', '재생 제어'],
+    num: '02', titleKey: 'stepByStepExecution', descKey: 'stepByStepExecutionDesc',
+    tags: ['stepByStep', 'variableTracking', 'executionFlow', 'playbackControl'],
     Preview: StepPreview,
   },
   {
-    num: '03', title: 'Human-Readable UI/UX',
-    desc: '에러 메시지를 한국어로 쉽게 설명하고, 수정 힌트까지 제공합니다. Segmentation Fault가 더 이상 무섭지 않아요.',
-    tags: ['한/영 지원', '에러 가이드', '수정 힌트', '직관적 UI'],
+    num: '03', titleKey: 'humanReadableUI', descKey: 'humanReadableUIDesc',
+    tags: ['koreanEnglishSupport', 'errorGuide', 'fixHint', 'intuitiveUI'],
     Preview: HumanPreview,
   },
 ]
 
 export default function Features() {
+  const { t } = useLanguage()
   const [active, setActive] = useState(0)
   const f = features[active]
 
   return (
     <section className="features" id="features">
       <div className="section-inner">
-        <div className="section-label">핵심 기능</div>
-        <h2 className="section-title">C언어를 <span className="text-accent">시각화</span>하는 3가지 방법</h2>
-        <p className="section-sub">기획서에 담긴 세 가지 핵심 기능으로 추상적인 C언어를 직관적으로 이해합니다.</p>
+        <div className="section-label">{t('coreFeatures')}</div>
+        <h2 className="section-title" dangerouslySetInnerHTML={{ __html: t('cVisualizer3ways') }} />
+        <p className="section-sub">{t('coreFeaturesDesc')}</p>
 
         <div className="feat-layout">
           <div className="feat-tabs">
@@ -207,8 +205,8 @@ export default function Features() {
                 onClick={() => setActive(i)}>
                 <span className="feat-tab-num">{feat.num}</span>
                 <div className="feat-tab-info">
-                  <span className="feat-tab-tag">핵심 기능</span>
-                  <span className="feat-tab-title">{feat.title}</span>
+                  <span className="feat-tab-tag">{t('coreFeatures')}</span>
+                  <span className="feat-tab-title">{t(feat.titleKey)}</span>
                 </div>
                 {active === i && <span className="feat-tab-bar" />}
               </button>
@@ -216,13 +214,13 @@ export default function Features() {
           </div>
 
           <div className="feat-detail" key={active}>
-            <h3 className="feat-title">{f.title}</h3>
-            <p className="feat-desc">{f.desc}</p>
+            <h3 className="feat-title">{t(f.titleKey)}</h3>
+            <p className="feat-desc">{t(f.descKey)}</p>
             <div className="feat-tags">
-              {f.tags.map(t => <span key={t} className="feat-tag-chip">{t}</span>)}
+              {f.tags.map(tagKey => <span key={tagKey} className="feat-tag-chip">{t(tagKey)}</span>)}
             </div>
             <div className="feat-preview-wrap">
-              <f.Preview />
+              <f.Preview t={t} />
             </div>
           </div>
         </div>
