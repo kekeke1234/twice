@@ -1,311 +1,336 @@
+const C_KEYWORDS = [
+  'auto', 'break', 'case', 'char', 'const', 'continue', 'default', 'do',
+  'double', 'else', 'enum', 'extern', 'float', 'for', 'goto', 'if',
+  'int', 'long', 'register', 'return', 'short', 'signed', 'sizeof', 'static',
+  'struct', 'switch', 'typedef', 'union', 'unsigned', 'void', 'volatile', 'while'
+];
+
+const C_TYPES = ['int', 'char', 'float', 'double', 'void', 'long', 'short', 'unsigned', 'signed'];
+
 export function validateCCode(code) {
-  const errors = []
+  const errors = [];
 
   if (!code || code.trim().length === 0) {
-    return [{ line: 0, message: 'error: no input file (empty code)' }]
+    return [{ line: 0, message: 'error: empty input file' }];
   }
 
-  if (!/int\s+main\s*\(/.test(code)) {
-    errors.push({ line: 0, message: 'error: no main() function found' })
-    return errors
-  }
+  const lines = code.split('\n');
+  let hasMain = false;
 
-  if (!/#include\s*<[^>]+>/.test(code)) {
-    errors.push({ line: 0, message: "warning: missing #include <stdio.h> or other headers" })
-  }
-
-  let lineNum = 1
-  const lineToPos = [0]
-  for (let i = 0; i < code.length; i++) {
-    if (code[i] === '\n') {
-      lineNum++
-      lineToPos.push(i + 1)
+  for (let i = 0; i < lines.length; i++) {
+    if (/^\s*int\s+main\s*\(/.test(lines[i])) {
+      hasMain = true;
+      break;
     }
   }
 
-  let braceCount = 0
-  let parenCount = 0
-  let inString = false
-  let inComment = false
-  let inBlockComment = false
-
-  for (let i = 0; i < code.length; i++) {
-    const ch = code[i]
-    const prev = i > 0 ? code[i - 1] : ''
-
-    if (inBlockComment) {
-      if (ch === '*' && code[i + 1] === '/') {
-        inBlockComment = false
-        i++
-      }
-      continue
-    }
-
-    if (inComment) {
-      if (ch === '\n') inComment = false
-      continue
-    }
-
-    if (ch === '"' && prev !== '\\') {
-      inString = !inString
-      continue
-    }
-
-    if (inString) continue
-
-    if (ch === '/' && code[i + 1] === '/') {
-      inComment = true
-      continue
-    }
-
-    if (ch === '/' && code[i + 1] === '*') {
-      inBlockComment = true
-      continue
-    }
-
-    if (ch === '{') braceCount++
-    if (ch === '}') braceCount--
-    if (ch === '(') parenCount++
-    if (ch === ')') parenCount--
+  if (!hasMain) {
+    errors.push({ line: 0, message: 'gcc: fatal error: no main function defined' });
+    errors.push({ line: 0, message: 'compilation terminated.' });
+    return errors;
   }
 
-  if (braceCount > 0) {
-    errors.push({ line: 0, message: 'error: unclosed block' })
-    return errors
-  }
-  if (braceCount < 0) {
-    errors.push({ line: 0, message: 'error: unexpected closing brace' })
-    return errors
-  }
-  if (parenCount > 0) {
-    errors.push({ line: 0, message: 'error: unclosed parenthesis' })
-    return errors
-  }
-  if (parenCount < 0) {
-    errors.push({ line: 0, message: 'error: unexpected closing parenthesis' })
-    return errors
+  const linesData = lines.map((line, idx) => ({
+    number: idx + 1,
+    text: line,
+    trimmed: line.trim(),
+    tokens: tokenizeLine(line)
+  }));
+
+  for (const lineData of linesData) {
+    checkLineForErrors(lineData, linesData, errors);
   }
 
-  const mainStart = code.indexOf('int main')
-  if (mainStart === -1) {
-    errors.push({ line: 0, message: 'error: no main() function found' })
-    return errors
+  checkGlobalSyntax(code, errors);
+
+  if (errors.length === 0) {
+    return [{ line: 0, message: 'Compilation successful. No errors.' }];
   }
 
-  const mainBodyStart = code.indexOf('{', mainStart)
-  if (mainBodyStart === -1) {
-    errors.push({ line: 0, message: 'error: main() body not found' })
-    return errors
-  }
-
-  let mainStartLine = 1
-  for (let i = 0; i <= mainBodyStart; i++) {
-    if (code[i] === '\n') mainStartLine++
-  }
-
-  const mainBody = code.substring(mainBodyStart + 1)
-  const braceEnd = findMatchingBrace(mainBody, 0)
-  if (braceEnd === -1) {
-    errors.push({ line: mainStartLine, message: 'error: unclosed block in main' })
-    return errors
-  }
-
-  const actualMainBody = mainBody.substring(0, braceEnd)
-  const stmts = splitIntoStatements(actualMainBody, mainStartLine + 1)
-
-  for (const stmt of stmts) {
-    const trimmed = stmt.text.trim()
-    if (!trimmed) continue
-
-    if (trimmed.startsWith('//')) continue
-    if (trimmed.startsWith('/*')) continue
-
-    const lastChar = trimmed[trimmed.length - 1]
-    if (lastChar === '{' || lastChar === '}') continue
-
-    if (isBlockStatement(trimmed)) continue
-
-    if (lastChar !== ';' && lastChar !== '{' && lastChar !== '}') {
-      errors.push({ line: stmt.line, message: 'error: missing semicolon' })
-      return errors
-    }
-  }
-
-  return errors
+  return errors.slice(0, 20);
 }
 
-function findMatchingBrace(str, start) {
-  let depth = 1
-  let inString = false
-  let inComment = false
-  let inBlockComment = false
+function tokenizeLine(line) {
+  const tokens = [];
+  let i = 0;
+  let current = '';
+  let inString = false;
+  let inChar = false;
 
-  for (let i = start; i < str.length; i++) {
-    const ch = str[i]
-    const prev = i > 0 ? str[i - 1] : ''
-
-    if (inBlockComment) {
-      if (ch === '*' && str[i + 1] === '/') {
-        inBlockComment = false
-        i++
-      }
-      continue
-    }
-
-    if (inComment) {
-      if (ch === '\n') inComment = false
-      continue
-    }
-
-    if (ch === '"' && prev !== '\\') {
-      inString = !inString
-      continue
-    }
-
-    if (inString) continue
-
-    if (ch === '/' && str[i + 1] === '/') {
-      inComment = true
-      continue
-    }
-
-    if (ch === '/' && str[i + 1] === '*') {
-      inBlockComment = true
-      continue
-    }
-
-    if (ch === '{') {
-      depth++
-    }
-    if (ch === '}') {
-      depth--
-      if (depth === 0) return i
-    }
-  }
-  return -1
-}
-
-function splitIntoStatements(body, baseLineNum) {
-  const stmts = []
-  let current = ''
-  let currentLine = baseLineNum
-  let stmtStartLine = baseLineNum
-  let depth = 0
-  let inString = false
-  let inComment = false
-  let inBlockComment = false
-  let i = 0
-
-  while (i < body.length) {
-    const ch = body[i]
-    const prev = i > 0 ? body[i - 1] : ''
-
-    if (inBlockComment) {
-      if (ch === '*' && body[i + 1] === '/') {
-        inBlockComment = false
-        i += 2
-      } else {
-        i++
-      }
-      if (ch === '\n') currentLine++
-      continue
-    }
-
-    if (inComment) {
-      if (ch === '\n') {
-        inComment = false
-        currentLine++
-      }
-      i++
-      continue
-    }
-
-    if (ch === '"' && prev !== '\\') {
-      inString = !inString
-      current += ch
-      i++
-      continue
-    }
+  while (i < line.length) {
+    const ch = line[i];
+    const nextCh = line[i + 1];
 
     if (inString) {
-      current += ch
-      i++
-      continue
+      if (ch === '"' && line[i - 1] !== '\\') {
+        tokens.push({ type: 'STRING', value: current + ch });
+        current = '';
+        inString = false;
+      } else {
+        current += ch;
+      }
+      i++;
+      continue;
     }
 
-    if (ch === '/' && body[i + 1] === '/') {
+    if (inChar) {
+      if (ch === "'" && line[i - 1] !== '\\') {
+        tokens.push({ type: 'CHAR', value: current + ch });
+        current = '';
+        inChar = false;
+      } else {
+        current += ch;
+      }
+      i++;
+      continue;
+    }
+
+    if (ch === '"') {
+      if (current.trim()) tokens.push({ type: 'CODE', value: current.trim() });
+      current = '';
+      inString = true;
+      i++;
+      continue;
+    }
+
+    if (ch === "'") {
+      if (current.trim()) tokens.push({ type: 'CODE', value: current.trim() });
+      current = '';
+      inChar = true;
+      i++;
+      continue;
+    }
+
+    if (ch === '/' && nextCh === '/') {
+      if (current.trim()) tokens.push({ type: 'CODE', value: current.trim() });
+      current = '';
+      tokens.push({ type: 'COMMENT', value: line.slice(i) });
+      break;
+    }
+
+    if (ch === '/' && nextCh === '*') {
+      if (current.trim()) tokens.push({ type: 'CODE', value: current.trim() });
+      current = '';
+      const end = line.indexOf('*/', i + 2);
+      const blockComment = end === -1 ? line.slice(i) : line.slice(i, end + 2);
+      tokens.push({ type: 'COMMENT', value: blockComment });
+      i = end === -1 ? line.length : end + 2;
+      continue;
+    }
+
+    if (ch === '#') {
+      if (current.trim()) tokens.push({ type: 'CODE', value: current.trim() });
+      current = '';
+      let end = i;
+      while (end < line.length && line[end] !== '\n') end++;
+      tokens.push({ type: 'PREPROC', value: line.slice(i, end).trim() });
+      i = end;
+      continue;
+    }
+
+    if (/\s/.test(ch)) {
       if (current.trim()) {
-        stmts.push({ text: current.trim(), line: stmtStartLine })
-        current = ''
+        tokens.push({ type: 'CODE', value: current.trim() });
+        current = '';
       }
-      inComment = true
-      i += 2
-      continue
+      i++;
+      continue;
     }
 
-    if (ch === '/' && body[i + 1] === '*') {
-      if (current.trim()) {
-        stmts.push({ text: current.trim(), line: stmtStartLine })
-        current = ''
-      }
-      inBlockComment = true
-      i += 2
-      continue
+    if (';{},'.includes(ch)) {
+      if (current.trim()) tokens.push({ type: 'CODE', value: current.trim() });
+      current = '';
+      tokens.push({ type: 'DELIM', value: ch });
+      i++;
+      continue;
     }
 
-    if (ch === '\n') {
-      currentLine++
-      i++
-      continue
-    }
-
-    if (ch === '{' || ch === '}') {
-      if (current.trim()) {
-        stmts.push({ text: current.trim(), line: stmtStartLine })
-        current = ''
-        stmtStartLine = currentLine
-      }
-      stmts.push({ text: ch, line: currentLine })
-      depth += (ch === '{' ? 1 : -1)
-      stmtStartLine = currentLine + 1
-      i++
-      continue
-    }
-
-    if (depth === 0 && ch === ';') {
-      current += ch
-      stmts.push({ text: current.trim(), line: stmtStartLine })
-      current = ''
-      stmtStartLine = currentLine + 1
-      i++
-      continue
-    }
-
-    if (depth === 0) {
-      if (current === '' && (ch === ' ' || ch === '\t')) {
-        i++
-        continue
-      }
-      if (current === '') {
-        stmtStartLine = currentLine
-      }
-      current += ch
-    }
-
-    i++
+    current += ch;
+    i++;
   }
 
   if (current.trim()) {
-    stmts.push({ text: current.trim(), line: stmtStartLine })
+    tokens.push({ type: 'CODE', value: current.trim() });
   }
 
-  return stmts
+  return tokens;
 }
 
-function isBlockStatement(stmt) {
-  const t = stmt.trim()
-  if (/^(if|else|while|for|do|switch|case|default)\b/.test(t)) return true
-  if (/^(int|char|float|double|long|short|unsigned|signed|void|struct|typedef|const|static|enum)\s+/.test(t)) return true
-  if (/^(return|break|continue)\b/.test(t)) return true
-  return false
+function checkLineForErrors(lineData, allLines, errors) {
+  const { number, trimmed, tokens } = lineData;
+
+  if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('/*') || trimmed.startsWith('#')) {
+    return;
+  }
+
+  const codeTokens = tokens.filter(t => t.type === 'CODE' || t.type === 'DELIM');
+
+  if (codeTokens.length === 0) return;
+
+  const lastToken = codeTokens[codeTokens.length - 1];
+
+  if (lastToken.type === 'DELIM' && lastToken.value === ';') {
+    return;
+  }
+
+  if (lastToken.type === 'DELIM' && (lastToken.value === '{' || lastToken.value === '}')) {
+    return;
+  }
+
+  if (isControlStructure(trimmed)) {
+    return;
+  }
+
+  const needsSemicolon = statementNeedsSemicolon(trimmed, codeTokens, lastToken);
+
+  if (needsSemicolon) {
+    const token = trimmed.split(/\s+/).pop();
+    errors.push({
+      line: number,
+      message: `error: expected ';' after '${token}'`
+    });
+  }
+}
+
+function isControlStructure(text) {
+  const trimmed = text.trim();
+  return /^(if|else|while|for|do|switch|case|default)\b/.test(trimmed) ||
+         trimmed.endsWith('{') || trimmed.endsWith('}');
+}
+
+function statementNeedsSemicolon(text, codeTokens, lastToken) {
+  const trimmed = text.trim();
+
+  if (!trimmed) return false;
+
+  if (lastToken.type === 'DELIM' && lastToken.value === ';') return false;
+
+  if (lastToken.type === 'DELIM' && (lastToken.value === '{' || lastToken.value === '}')) return false;
+
+  if (trimmed.startsWith('if ') || trimmed.startsWith('while ') ||
+      trimmed.startsWith('for ') || trimmed.startsWith('switch ') ||
+      trimmed.startsWith('do ') || trimmed.startsWith('else')) {
+    return false;
+  }
+
+  const statementStarters = [
+    'int ', 'char ', 'float ', 'double ', 'void ', 'long ',
+    'short ', 'unsigned ', 'signed ', 'struct ', 'typedef ',
+    'enum ', 'union ', 'const ', 'static ', 'extern ',
+    'return ', 'break ', 'continue ', 'goto '
+  ];
+
+  for (const starter of statementStarters) {
+    if (trimmed.startsWith(starter)) {
+      if (trimmed.endsWith(')') && !trimmed.includes('{')) {
+        return false;
+      }
+      return true;
+    }
+  }
+
+  if (trimmed.startsWith('printf ') || trimmed.startsWith('scanf ') ||
+      trimmed.startsWith('malloc ') || trimmed.startsWith('free ')) {
+    return true;
+  }
+
+  if (trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('!=') &&
+      !trimmed.includes('<=') && !trimmed.includes('>=')) {
+    const hasFunctionCall = /[a-zA-Z_][a-zA-Z0-9_]*\s*\([^)]*\)\s*$/.test(trimmed);
+    if (!hasFunctionCall) return true;
+  }
+
+  if (trimmed.includes('++') || trimmed.includes('--')) {
+    return true;
+  }
+
+  return false;
+}
+
+function checkGlobalSyntax(code, errors) {
+  let braceCount = 0;
+  let parenCount = 0;
+  let inString = false;
+  let inChar = false;
+  let inComment = false;
+  let inBlockComment = false;
+
+  for (let i = 0; i < code.length; i++) {
+    const ch = code[i];
+    const prev = code[i - 1] || '';
+
+    if (inBlockComment) {
+      if (ch === '*' && code[i + 1] === '/') {
+        inBlockComment = false;
+        i++;
+      }
+      continue;
+    }
+
+    if (inComment) {
+      if (ch === '\n') inComment = false;
+      continue;
+    }
+
+    if (inString) {
+      if (ch === '"' && prev !== '\\') inString = false;
+      continue;
+    }
+
+    if (inChar) {
+      if (ch === "'" && prev !== '\\') inChar = false;
+      continue;
+    }
+
+    if (ch === '"') {
+      inString = true;
+      continue;
+    }
+
+    if (ch === "'") {
+      inChar = true;
+      continue;
+    }
+
+    if (ch === '/' && code[i + 1] === '/') {
+      inComment = true;
+      continue;
+    }
+
+    if (ch === '/' && code[i + 1] === '*') {
+      inBlockComment = true;
+      continue;
+    }
+
+    if (ch === '{') braceCount++;
+    if (ch === '}') braceCount--;
+    if (ch === '(') parenCount++;
+    if (ch === ')') parenCount--;
+  }
+
+  if (braceCount > 0) {
+    errors.push({ line: 0, message: 'error: expected declaration or statement at end of input' });
+  }
+  if (braceCount < 0) {
+    errors.push({ line: 0, message: 'error: expected \'}\' before end of file' });
+  }
+  if (parenCount > 0) {
+    errors.push({ line: 0, message: 'error: expected \')\' before \';\'' });
+  }
+  if (parenCount < 0) {
+    errors.push({ line: 0, message: 'error: expected \'(\' before \')\'' });
+  }
+}
+
+export function formatGCCError(error) {
+  return error.message;
+}
+
+export function getCompilerInfo() {
+  return {
+    name: 'GCC',
+    version: '11.4.0',
+    target: 'x86_64-linux-gnu',
+    compilerFlags: ['-Wall', '-Wextra', '-std=c11']
+  };
 }

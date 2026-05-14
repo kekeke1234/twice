@@ -21,8 +21,8 @@ function TextOnlyIllust() {
       <ellipse cx="50" cy="75" rx="8" ry="5" fill="none" stroke="#444" strokeWidth="1.2"/>
       <line x1="44" y1="69" x2="56" y2="81" stroke="#444" strokeWidth="1.2" strokeLinecap="round"/>
     </svg>
-  )
-}
+  );
+};
 
 function PointerIllust({ t }) {
   return (
@@ -46,8 +46,8 @@ function PointerIllust({ t }) {
       {/* 아래 설명 */}
       <text x="80" y="76" textAnchor="middle" fill="#444" fontSize="8" fontFamily="sans-serif">{t('whereDoesPointerPoint')}</text>
     </svg>
-  )
-}
+  );
+};
 
 function SegfaultIllust() {
   return (
@@ -68,8 +68,8 @@ function SegfaultIllust() {
       {/* 깜빡이는 경고 아이콘 */}
       <text x="130" y="56" fill="#e5c07b" fontSize="18" className="prob-warn-anim">⚠</text>
     </svg>
-  )
-}
+  );
+};
 
 const problems = [
   {
@@ -90,10 +90,10 @@ const problems = [
     descKey: 'segfaultProblemDesc',
     color: '#f5c518',
   },
-]
+];
 
 export default function Problem() {
-  const { t } = useLanguage()
+  const { t } = useLanguage();
   return (
     <section className="problem" id="problem">
       <div className="section-inner">
@@ -114,5 +114,5 @@ export default function Problem() {
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -17,7 +17,7 @@ const DEFAULT_THEME = {
   '--danger-coral': '#e5534b',
   '--info-teal': '#56b6c2',
   '--soft-purple': '#c678dd',
-}
+};
 
 const PRESET_THEMES = {
   default: { name: 'Emerald Dark', colors: { ...DEFAULT_THEME } },
@@ -101,46 +101,46 @@ const PRESET_THEMES = {
 
 export function ThemeProvider({ children }) {
   const [customColors, setCustomColors] = useState(() => {
-    const saved = localStorage.getItem('customTheme')
-    return saved ? JSON.parse(saved) : null
-  })
+    const saved = localStorage.getItem('customTheme');
+    return saved ? JSON.parse(saved) : null;
+  });
   const [activePreset, setActivePreset] = useState(() => {
-    return localStorage.getItem('activePreset') || 'default'
-  })
+    return localStorage.getItem('activePreset') || 'default';
+  });
 
   useEffect(() => {
     if (customColors) {
-      localStorage.setItem('customTheme', JSON.stringify(customColors))
+      localStorage.setItem('customTheme', JSON.stringify(customColors));
       Object.entries(customColors).forEach(([varName, value]) => {
-        document.documentElement.style.setProperty(varName, value)
-      })
+        document.documentElement.style.setProperty(varName, value);
+      });
     } else if (PRESET_THEMES[activePreset]) {
       Object.entries(PRESET_THEMES[activePreset].colors).forEach(([varName, value]) => {
-        document.documentElement.style.setProperty(varName, value)
-      })
+        document.documentElement.style.setProperty(varName, value);
+      });
     }
-  }, [customColors, activePreset])
+  }, [customColors, activePreset]);
 
   const applyPreset = (presetName) => {
-    setCustomColors(null)
-    setActivePreset(presetName)
-    localStorage.setItem('activePreset', presetName)
-    localStorage.removeItem('customTheme')
-  }
+    setCustomColors(null);
+    setActivePreset(presetName);
+    localStorage.setItem('activePreset', presetName);
+    localStorage.removeItem('customTheme');
+  };
 
   const updateColor = (varName, value) => {
     setCustomColors(prev => {
-      const updated = { ...(prev || PRESET_THEMES[activePreset].colors), [varName]: value }
-      return updated
-    })
-  }
+      const updated = { ...(prev || PRESET_THEMES[activePreset].colors), [varName]: value };
+      return updated;
+    });
+  };
 
   const resetTheme = () => {
-    setCustomColors(null)
-    setActivePreset('default')
-    localStorage.removeItem('customTheme')
-    localStorage.setItem('activePreset', 'default')
-  }
+    setCustomColors(null);
+    setActivePreset('default');
+    localStorage.removeItem('customTheme');
+    localStorage.setItem('activePreset', 'default');
+  };
 
   return (
     <ThemeContext.Provider value={{
@@ -158,7 +158,7 @@ export function ThemeProvider({ children }) {
 }
 
 export function useTheme() {
-  const ctx = useContext(ThemeContext)
-  if (!ctx) throw new Error('useTheme must be used within ThemeProvider')
-  return ctx
+  const ctx = useContext(ThemeContext);
+  if (!ctx) throw new Error('useTheme must be used within ThemeProvider');
+  return ctx;
 }

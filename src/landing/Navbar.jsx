@@ -1,8 +1,8 @@
-import './Navbar.css'
-import { useLanguage } from '../context/LanguageContext'
+import './Navbar.css';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Navbar({ onStart, onHome, onLeaderboard, onAuth }) {
-  const { language, setLanguage, t } = useLanguage()
+  const { language, setLanguage, t } = useLanguage();
 
   return (
     <nav className="navbar">
@@ -37,5 +37,5 @@ export default function Navbar({ onStart, onHome, onLeaderboard, onAuth }) {
         <button className="nav-cta" onClick={onStart}>{t('getStarted')}</button>
       </div>
     </nav>
-  )
+  );
 }

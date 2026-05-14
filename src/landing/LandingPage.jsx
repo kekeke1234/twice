@@ -1,14 +1,14 @@
-import './LandingPage.css'
-import Navbar from './Navbar'
-import Hero from './Hero'
-import Problem from './Problem'
-import Features from './Features'
-import Target from './Target'
-import CTA from './CTA'
-import Footer from './Footer'
+import './LandingPage.css';
+import Navbar from './Navbar';
+import Hero from './Hero';
+import Problem from './Problem';
+import Features from './Features';
+import Target from './Target';
+import CTA from './CTA';
+import Footer from './Footer';
 
 export default function LandingPage({ onStart, onLeaderboard, onAuth }) {
-  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
+  const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   return (
     <div className="landing">
@@ -20,5 +20,5 @@ export default function LandingPage({ onStart, onLeaderboard, onAuth }) {
       <CTA onStart={onStart} />
       <Footer />
     </div>
-  )
+  );
 }

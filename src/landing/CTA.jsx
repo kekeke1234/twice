@@ -1,8 +1,8 @@
-import { useLanguage } from '../context/LanguageContext'
-import './CTA.css'
+import { useLanguage } from '../context/LanguageContext';
+import './CTA.css';
 
 export default function CTA({ onStart }) {
-  const { t } = useLanguage()
+  const { t } = useLanguage();
   return (
     <section className="cta-section">
       <div className="cta-inner">
@@ -17,5 +17,5 @@ export default function CTA({ onStart }) {
         <p className="cta-note">{t('noSignupRequired')}</p>
       </div>
     </section>
-  )
+  );
 }

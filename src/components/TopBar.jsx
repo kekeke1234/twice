@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useLanguage } from '../context/LanguageContext'
 import { useTheme } from '../context/ThemeContext'
+import { useAuth } from '../context/AuthContext'
 import { PROBLEMS } from '../problems'
 import './TopBar.css'
 
@@ -11,7 +12,7 @@ const CURRICULUM = [
   { chapter: 'chapter4', desc: 'chapter4Desc', topics: 'chapter4Topics', problems: ['array-basics', 'pointer-basics', 'pointer-arithmetic'] },
   { chapter: 'chapter5', desc: 'chapter5Desc', topics: 'chapter5Topics', problems: ['struct-basics', 'malloc-basic'] },
   { chapter: 'chapter6', desc: 'chapter6Desc', topics: 'chapter6Topics', problems: ['linked-list', 'file-io'] },
-]
+];
 
 const COLOR_LABELS = {
   '--emerald-signal': 'Primary Accent',
@@ -27,18 +28,19 @@ const COLOR_LABELS = {
   '--danger-coral': 'Danger',
   '--info-teal': 'Info',
   '--soft-purple': 'Purple Accent',
-}
+};
 
 export default function TopBar({ onHome, onRun, onLeaderboard, onAuth, currentProblem, onSelectProblem }) {
-  const { t } = useLanguage()
-  const { presets, activePreset, applyPreset, updateColor, resetTheme, currentColors } = useTheme()
-  const [showProblemList, setShowProblemList] = useState(false)
-  const [showThemePanel, setShowThemePanel] = useState(false)
-  const [expandedChapter, setExpandedChapter] = useState(null)
+  const { t } = useLanguage();
+  const { user, logout } = useAuth();
+  const { presets, activePreset, applyPreset, updateColor, resetTheme, currentColors } = useTheme();
+  const [showProblemList, setShowProblemList] = useState(false);
+  const [showThemePanel, setShowThemePanel] = useState(false);
+  const [expandedChapter, setExpandedChapter] = useState(null);
 
   const toggleChapter = (index) => {
-    setExpandedChapter(expandedChapter === index ? null : index)
-  }
+    setExpandedChapter(expandedChapter === index ? null : index);
+  };
 
   return (
     <div className="top-bar">
@@ -48,15 +50,9 @@ export default function TopBar({ onHome, onRun, onLeaderboard, onAuth, currentPr
           <span className="logo-text">CodeLearn <span className="text-emerald">C</span></span>
         </div>
       </div>
-      <div className="top-bar-center">
-        <div className="file-tabs">
-          <div className="tab active">main.c</div>
-          <div className="tab">utils.h</div>
-        </div>
-      </div>
       <div className="top-bar-right">
         <button className="leaderboard-btn" onClick={onLeaderboard}>{t('leaderboard')}</button>
-        <button className="auth-top-btn" onClick={onAuth}>{t('signIn')}</button>
+        <button className="auth-top-btn" onClick={user ? logout : onAuth}>{user ? t('logout') : t('signIn')}</button>
         <button className="run-btn" onClick={onRun}>{t('runCode')}</button>
         <button
           className={`theme-color-btn`}
@@ -107,8 +103,8 @@ export default function TopBar({ onHome, onRun, onLeaderboard, onAuth, currentPr
                         key={p.id}
                         className={`curriculum-problem-item ${p.id === currentProblem?.id ? 'active' : ''}`}
                         onClick={() => {
-                          onSelectProblem(p.id)
-                          setShowProblemList(false)
+                          onSelectProblem(p.id);
+                          setShowProblemList(false);
                         }}
                       >
                         <span className="problem-icon">▸</span>
@@ -117,13 +113,8 @@ export default function TopBar({ onHome, onRun, onLeaderboard, onAuth, currentPr
                     ))}
                   </div>
                 )}
-                <div className="curriculum-topics">
-                  {t(item.topics).split(',').map((topic, i) => (
-                    <span key={i} className="curriculum-topic">{topic.trim()}</span>
-                  ))}
-                </div>
               </div>
-            )
+            );
           })}
         </div>
       </div>

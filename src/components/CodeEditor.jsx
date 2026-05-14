@@ -1,7 +1,7 @@
-import './CodeEditor.css'
+import './CodeEditor.css';
 
 export default function CodeEditor({ code, onChange, theme = 'default' }) {
-  const lineCount = code.split('\n').length
+  const lineCount = code.split('\n').length;
 
   return (
     <div className={`code-editor theme-${theme}`}>
@@ -17,5 +17,5 @@ export default function CodeEditor({ code, onChange, theme = 'default' }) {
         spellCheck="false"
       />
     </div>
-  )
+  );
 }

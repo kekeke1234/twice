@@ -1,8 +1,8 @@
-import { useLanguage } from '../context/LanguageContext'
-import './RightPanel.css'
+import { useLanguage } from '../context/LanguageContext';
+import './RightPanel.css';
 
-export default function RightPanel({ problem, terminalOutput, executionData, width }) {
-  const { t } = useLanguage()
+export default function RightPanel({ problem, terminalOutput, width }) {
+  const { t } = useLanguage();
   return (
     <div className="right-panel" style={{ width }}>
       <div className="panel-section problem-section">
@@ -29,5 +29,5 @@ export default function RightPanel({ problem, terminalOutput, executionData, wid
         </div>
       </div>
     </div>
-  )
+  );
 }

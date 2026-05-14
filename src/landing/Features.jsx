@@ -8,15 +8,15 @@ const MEM_STEPS = [
   { line: 2, label: 'int *p = &x;',   stack: [{ n:'p', v:'→ x',      c:'#c678dd', ptr:true },{ n:'x', v:'10', c:'#56b6c2' }], heap: [] },
   { line: 3, label: '*p = 42;',       stack: [{ n:'p', v:'→ x',      c:'#c678dd', ptr:true },{ n:'x', v:'42', c:'#56b6c2', changed:true }], heap: [] },
   { line: 4, label: 'malloc(8)',       stack: [{ n:'h', v:'→ heap',   c:'#e5c07b', ptr:true },{ n:'p', v:'→ x', c:'#c678dd', ptr:true },{ n:'x', v:'42', c:'#56b6c2' }], heap: [{ n:'[8B]', c:'#e5c07b' }] },
-]
+];
 
 function MemPreview({ t }) {
-  const [idx, setIdx] = useState(0)
+  const [idx, setIdx] = useState(0);
   useEffect(() => {
-    const t = setInterval(() => setIdx(i => (i + 1) % MEM_STEPS.length), 1800)
-    return () => clearInterval(t)
-  }, [])
-  const s = MEM_STEPS[idx]
+    const t = setInterval(() => setIdx(i => (i + 1) % MEM_STEPS.length), 1800);
+    return () => clearInterval(t);
+  }, []);
+  const s = MEM_STEPS[idx];
   return (
     <div className="fp-mem">
       <div className="fp-code-bar">
@@ -60,8 +60,8 @@ function MemPreview({ t }) {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 /* ── Feature 2: Step execution ── */
 const EXEC_STEPS = [
@@ -69,17 +69,17 @@ const EXEC_STEPS = [
   { code: 'int *ptr = &x;',    vars: { x: '10', ptr: '&x' },         note: 'ptr이 x의 주소를 저장' },
   { code: 'int y = *ptr + 5;', vars: { x: '10', ptr: '&x', y: '15' },note: '*ptr = 10, y = 15' },
   { code: 'printf("%d", y);',  vars: { x: '10', ptr: '&x', y: '15' },note: '"15" 출력됨 ✓' },
-]
+];
 
 function StepPreview({ t }) {
-  const [step, setStep] = useState(0)
-  const [playing, setPlaying] = useState(true)
+  const [step, setStep] = useState(0);
+  const [playing, setPlaying] = useState(true);
   useEffect(() => {
-    if (!playing) return
-    const t = setInterval(() => setStep(s => (s + 1) % EXEC_STEPS.length), 1600)
-    return () => clearInterval(t)
-  }, [playing])
-  const cur = EXEC_STEPS[step]
+    if (!playing) return;
+    const t = setInterval(() => setStep(s => (s + 1) % EXEC_STEPS.length), 1600);
+    return () => clearInterval(t);
+  }, [playing]);
+  const cur = EXEC_STEPS[step];
   return (
     <div className="fp-step">
       <div className="fp-step-controls">
@@ -116,16 +116,16 @@ function StepPreview({ t }) {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 /* ── Feature 3: Human-Readable UI ── */
 function HumanPreview({ t }) {
-  const [phase, setPhase] = useState(0)
+  const [phase, setPhase] = useState(0);
   useEffect(() => {
-    const id = setInterval(() => setPhase(p => (p + 1) % 3), 2000)
-    return () => clearInterval(id)
-  }, [])
+    const id = setInterval(() => setPhase(p => (p + 1) % 3), 2000);
+    return () => clearInterval(id);
+  }, []);
   const messages = [
     { type: 'error', icon: '💥', title: 'Segmentation Fault', line: '8번째 줄',
       body: 'ptr이 초기화되지 않은 주소를 가리키고 있어요. 포인터는 사용 전 반드시 유효한 주소를 할당해야 합니다.',
@@ -136,8 +136,8 @@ function HumanPreview({ t }) {
     { type: 'ok',    icon: '✅', title: '올바른 포인터 사용', line: '5번째 줄',
       body: 'ptr이 유효한 주소 &x를 가리키고 있습니다. 역참조(*ptr)도 안전하게 사용할 수 있어요.',
       fix: null },
-  ]
-  const m = messages[phase]
+  ];
+  const m = messages[phase];
   return (
     <div className="fp-human">
       <div className={`fp-err-card ${m.type}`} key={phase}>
@@ -163,8 +163,8 @@ function HumanPreview({ t }) {
         ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
 /* ── Main Features component ── */
 const features = [
@@ -183,12 +183,12 @@ const features = [
     tags: ['koreanEnglishSupport', 'errorGuide', 'fixHint', 'intuitiveUI'],
     Preview: HumanPreview,
   },
-]
+];
 
 export default function Features() {
-  const { t } = useLanguage()
-  const [active, setActive] = useState(0)
-  const f = features[active]
+  const { t } = useLanguage();
+  const [active, setActive] = useState(0);
+  const f = features[active];
 
   return (
     <section className="features" id="features">
@@ -226,5 +226,5 @@ export default function Features() {
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,8 +1,8 @@
-import { useLanguage } from '../context/LanguageContext'
-import './Footer.css'
+import { useLanguage } from '../context/LanguageContext';
+import './Footer.css';
 
 export default function Footer() {
-  const { t } = useLanguage()
+  const { t } = useLanguage();
   return (
     <footer className="footer">
       <div className="footer-inner">
@@ -39,5 +39,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

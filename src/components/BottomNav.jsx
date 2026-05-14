@@ -1,10 +1,10 @@
-import { useLanguage } from '../context/LanguageContext'
-import './BottomNav.css'
+import { useLanguage } from '../context/LanguageContext';
+import './BottomNav.css';
 
 export default function BottomNav({ executionData }) {
-  const { t } = useLanguage()
-  const { variables, stack, queue, memory } = executionData || {}
-  const hasData = (memory && memory.length > 0) || (stack && stack.length > 0) || (queue && queue.length > 0) || (variables && Object.keys(variables).length > 0)
+  const { t } = useLanguage();
+  const { variables, stack, queue, memory } = executionData || {};
+  const hasData = (memory && memory.length > 0) || (stack && stack.length > 0) || (queue && queue.length > 0) || (variables && Object.keys(variables).length > 0);
 
   return (
     <div className="bottom-nav">
@@ -69,5 +69,5 @@ export default function BottomNav({ executionData }) {
         </div>
       )}
     </div>
-  )
+  );
 }

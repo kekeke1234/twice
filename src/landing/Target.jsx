@@ -22,8 +22,8 @@ function SelfLearnerSVG() {
       <circle cx="94" cy="58" r="10" fill="rgba(86,182,194,0.15)" stroke="#56b6c2" strokeWidth="1"/>
       <text x="94" y="62" textAnchor="middle" fill="#56b6c2" fontSize="10">✓</text>
     </svg>
-  )
-}
+  );
+};
 
 function StudentSVG() {
   return (
@@ -47,8 +47,8 @@ function StudentSVG() {
       <line x1="30" y1="56" x2="25" y2="66" stroke="#2a2a3e" strokeWidth="1.5"/>
       <line x1="50" y1="56" x2="55" y2="66" stroke="#2a2a3e" strokeWidth="1.5"/>
     </svg>
-  )
-}
+  );
+};
 
 function ReviewerSVG() {
   return (
@@ -73,8 +73,8 @@ function ReviewerSVG() {
       <line x1="60" y1="38" x2="72" y2="38" stroke="#c678dd" strokeWidth="1"
         strokeDasharray="3 2" className="tgt-arrow"/>
     </svg>
-  )
-}
+  );
+};
 
 const targets = [
   {
@@ -98,10 +98,10 @@ const targets = [
     tags: ['review', 'memoryStructure', 'debuggingSkill'],
     color: '#c678dd',
   },
-]
+];
 
 export default function Target() {
-  const { t } = useLanguage()
+  const { t } = useLanguage();
   return (
     <section className="target" id="target">
       <div className="section-inner">
@@ -128,5 +128,5 @@ export default function Target() {
         </div>
       </div>
     </section>
-  )
+  );
 }

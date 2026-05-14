@@ -1,10 +1,10 @@
-import { useLanguage } from '../context/LanguageContext'
-import Navbar from '../landing/Navbar'
-import Footer from '../landing/Footer'
-import './PricingPage.css'
+import { useLanguage } from '../context/LanguageContext';
+import Navbar from '../landing/Navbar';
+import Footer from '../landing/Footer';
+import './PricingPage.css';
 
 export default function PricingPage({ onNavigate }) {
-  const { t } = useLanguage()
+  const { t } = useLanguage();
   return (
     <div className="pricing-page">
       <Navbar
@@ -64,5 +64,5 @@ export default function PricingPage({ onNavigate }) {
 
       <Footer />
     </div>
-  )
+  );
 }

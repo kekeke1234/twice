@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react';
 
-const LanguageContext = createContext(null)
+const LanguageContext = createContext(null);
 
 const translations = {
   en: {
@@ -9,7 +9,6 @@ const translations = {
     signIn: 'Sign In',
     signUp: 'Sign Up',
     github: 'GitHub',
-    getStarted: 'Get Started',
     startCoding: 'Start Coding',
     learnMore: 'Learn More',
     heroOverline: 'AI-POWERED C LEARNING',
@@ -58,23 +57,9 @@ const translations = {
     allRightsReserved: 'All rights reserved.',
     builtWith: 'Built with Emerald Signal',
     targetAudience: 'Target Audience',
-    forSelfLearners: '이런 분들을 위해 <span className="text-accent">만들었습니다</span>',
-    forAllLearners: '독학자와 학생 모두가 막히는 지점 없이 C언어를 이해할 수 있도록 설계했습니다.',
-    selfLearnerTitle: '혼자 공부하는 독학자',
-    selfLearnerDesc: '강의나 책만으로 C언어를 배우는 독학자. 막히는 개념을 스스로 해결할 수 있도록 시각적 단서와 직관적인 설명을 제공합니다.',
-    studentTitle: 'C언어를 배우는 학생',
-    studentDesc: '수업에서 C언어를 처음 접하는 학생. 교수님 설명만으로 이해하기 어려운 메모리 구조와 실행 흐름을 시각적으로 확인하세요.',
-    reviewerTitle: '개념을 다시 잡고 싶은 분',
-    reviewerDesc: 'C언어를 배웠지만 내부 원리가 여전히 모호한 분. 시각화를 통해 놓쳤던 개념을 빠르게 정리하세요.',
-    selfLearning: '자기주도 학습',
-    conquerPointers: '포인터 극복',
-    buildFoundation: '기초 다지기',
-    classSupplement: '수업 보조',
-    homeworkHelp: '과제 도움',
-    examPrep: '시험 대비',
-    review: '복습',
-    memoryStructure: '메모리 구조',
-    debuggingSkill: '디버깅 실력',
+    selfLearnerTitle: 'Self-Learner',
+    studentTitle: 'Student Learning C',
+    reviewerTitle: 'Those Who Want to Review',
     whyCVisualizer: 'Why C-Visualizer',
     problemsWithLearningC: '기존 C언어 학습의 <span className="text-accent">3가지 문제</span>',
     problemsDesc: '독학자와 학생들이 C언어에서 가장 많이 막히는 지점들입니다.',
@@ -309,7 +294,6 @@ const translations = {
     choosePlan: '학습 여정에 맞는 플랜을 선택하세요.',
     student: '학생',
     studentPrice: '₩0',
-    studentDesc: 'C 여정을 시작한 학생에게 완벽합니다.',
     proLearner: '프로 학습자',
     proPrice: '₩15,000',
     proDesc: '진지한 개발자를 위한 고급 기능.',
@@ -317,7 +301,6 @@ const translations = {
     uniPrice: '₩60,000',
     uniDesc: '교실 및 학습 그룹용.',
     mostPopular: '가장 인기',
-    getStarted: '시작하기',
     tryProFree: '프로 무료 체험',
     contactSales: '영업 문의',
     waitingForExecution: '실행 대기 중...',
@@ -393,24 +376,24 @@ const translations = {
 
 export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('language') || 'en'
-  })
+    return localStorage.getItem('language') || 'en';
+  });
 
   useEffect(() => {
-    localStorage.setItem('language', language)
-  }, [language])
+    localStorage.setItem('language', language);
+  }, [language]);
 
-  const t = (key) => translations[language][key] || key
+  const t = (key) => translations[language][key] || key;
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
-  )
+  );
 }
 
 export function useLanguage() {
-  const ctx = useContext(LanguageContext)
-  if (!ctx) throw new Error('useLanguage must be used within LanguageProvider')
-  return ctx
+  const ctx = useContext(LanguageContext);
+  if (!ctx) throw new Error('useLanguage must be used within LanguageProvider');
+  return ctx;
 }

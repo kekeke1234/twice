@@ -10,18 +10,18 @@ const codeLines = [
   { ln: 5, v: '    free(ptr);' },
   { ln: 6, v: '    return 0;' },
   { ln: 7, v: '}' },
-]
+];
 
 export default function Hero({ onStart }) {
-  const { t } = useLanguage()
-  const [activeLine, setActiveLine] = useState(1)
+  const { t } = useLanguage();
+  const [activeLine, setActiveLine] = useState(1);
 
   useEffect(() => {
     const id = setInterval(() => {
-      setActiveLine((l) => (l % 7) + 1)
-    }, 1500)
-    return () => clearInterval(id)
-  }, [])
+      setActiveLine((l) => (l % 7) + 1);
+    }, 1500);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <section className="hero">
@@ -79,5 +79,5 @@ export default function Hero({ onStart }) {
         </div>
       </div>
     </section>
-  )
+  );
 }

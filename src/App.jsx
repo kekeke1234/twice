@@ -10,10 +10,9 @@ import AuthPage from './pages/AuthPage'
 import { AuthProvider } from './context/AuthContext'
 import { LanguageProvider, useLanguage } from './context/LanguageContext'
 import { ThemeProvider } from './context/ThemeContext'
-import { validateCCode } from './cValidator'
 import memoryChip from './assets/memory-chip.png'
 
-function IDEContent({ editorTheme, setEditorTheme, code, setCode, currentProblem, setCurrentProblem, terminalOutput, setTerminalOutput, executionData, setExecutionData, navigateTo }) {
+function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProblem, terminalOutput, setTerminalOutput, executionData, setExecutionData, navigateTo }) {
   const { t } = useLanguage()
   const [rightPanelWidth, setRightPanelWidth] = useState(520)
   const [bottomHeight, setBottomHeight] = useState(280)
@@ -75,90 +74,42 @@ function IDEContent({ editorTheme, setEditorTheme, code, setCode, currentProblem
     }
   }
 
-  const runCode = () => {
-    const errors = validateCCode(code)
-    if (errors.length > 0) {
-      const lines = errors.map(e =>
-        e.line > 0 ? `  at main.c:${e.line}: ${e.message}` : `  ${e.message}`
-      )
-      setTerminalOutput(['$ gcc main.c -o main', '$ ./main', '', ...lines, '', t('compilationFailed')])
-      setExecutionData({ variables: {}, stack: [], queue: [], memory: [] })
-      return
+  const runCode = async () => {
+    setTerminalOutput(['$ gcc main.c -o main', '$ ./main', '', 'Compiling...'])
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'x-rapidapi-key': '177c7e9fe7mshc33b5d4a869679fp1976d7jsnbde38475596c',
+        'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        language_id: 52,
+        source_code: btoa(code),
+        stdin: btoa('')
+      })
     }
 
-    setTerminalOutput(['$ gcc main.c -o main', '$ ./main'])
+    try {
+      const response = await fetch('https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=true', options)
+      const result = await response.json()
 
-    setTimeout(() => {
-      const newExecutionData = { variables: {}, stack: [], queue: [], memory: [] }
-      let baseAddr = 0x7ff00000
-
-      const varMatches = code.matchAll(/int\s+(\w+)\s*=\s*(\d+)/g)
-      for (const match of varMatches) {
-        const name = match[1]
-        const val = match[2]
-        newExecutionData.variables[name] = val
-        newExecutionData.memory.push({
-          address: '0x' + (baseAddr).toString(16).toUpperCase(),
-          name: name,
-          value: val,
-          type: 'int'
-        })
-        baseAddr += 4
+      if (result.stdout) {
+        const output = atob(result.stdout)
+        setTerminalOutput(prev => [...prev, output, '', t('success')])
+      } else if (result.compile_output) {
+        const error = atob(result.compile_output)
+        setTerminalOutput(prev => [...prev, '', 'Compilation Error:', error])
+      } else if (result.stderr) {
+        const error = atob(result.stderr)
+        setTerminalOutput(prev => [...prev, '', 'Runtime Error:', error])
+      } else {
+        setTerminalOutput(prev => [...prev, '', 'Unknown error occurred'])
       }
-
-      const stackMatches = code.matchAll(/push\((\d+)\)/g)
-      for (const match of stackMatches) {
-        const val = match[1]
-        newExecutionData.stack.push(val)
-        newExecutionData.memory.push({
-          address: '0x' + (baseAddr).toString(16).toUpperCase(),
-          name: `stack[${newExecutionData.stack.length - 1}]`,
-          value: val,
-          type: 'int'
-        })
-        baseAddr += 4
-      }
-
-      const queueMatches = code.matchAll(/enqueue\((\d+)\)/g)
-      for (const match of queueMatches) {
-        newExecutionData.queue.push(match[1])
-      }
-
-      setExecutionData(newExecutionData)
-
-      if (currentProblem.id === 'hello-world') {
-        if (code.includes('printf("Hello, World!\\n")') || code.includes('printf("Hello, World!")')) {
-          setTerminalOutput(prev => [...prev, 'Hello, World!', '', t('success')])
-        } else {
-          setTerminalOutput(prev => [...prev, `Error: Output does not match expected "Hello, World!"`])
-        }
-      } else if (currentProblem.id === 'variables') {
-        if (code.includes('printf("%d\\n", a + b)') || code.includes('printf("%d", 30)') || (newExecutionData.variables.a && newExecutionData.variables.b)) {
-          const sum = (parseInt(newExecutionData.variables.a) || 0) + (parseInt(newExecutionData.variables.b) || 0)
-          setTerminalOutput(prev => [...prev, sum.toString(), '', t('success')])
-        } else {
-          setTerminalOutput(prev => [...prev, t('errorSumIncorrect')])
-        }
-      } else if (currentProblem.id === 'stack') {
-        if (newExecutionData.stack.length >= 3) {
-          setTerminalOutput(prev => [...prev, 'Stack state updated.', '', t('success')])
-        } else {
-          setTerminalOutput(prev => [...prev, t('tryPushing')])
-        }
-      } else if (currentProblem.id === 'queue') {
-        if (newExecutionData.queue.length >= 3) {
-          setTerminalOutput(prev => [...prev, 'Queue state updated.', '', t('success')])
-        } else {
-          setTerminalOutput(prev => [...prev, t('tryEnqueuing')])
-        }
-      } else if (currentProblem.id === 'if-else') {
-        if (code.includes('printf("Odd\\n")') || code.includes('printf("Odd")')) {
-          setTerminalOutput(prev => [...prev, 'Odd', '', t('success')])
-        } else {
-          setTerminalOutput(prev => [...prev, t('errorIncorrectLogic')])
-        }
-      }
-    }, 500)
+    } catch (error) {
+      setTerminalOutput(prev => [...prev, '', 'Connection error:', error.message])
+    }
   }
 
   return (
@@ -232,51 +183,51 @@ function IDEContent({ editorTheme, setEditorTheme, code, setCode, currentProblem
 }
 
 export default function App() {
-  const savedId = localStorage.getItem('problemId')
-  const savedCode = localStorage.getItem('code')
-  const savedTheme = localStorage.getItem('editorTheme')
-  const initialProblem = savedId ? PROBLEMS.find(p => p.id === savedId) || PROBLEMS[0] : PROBLEMS[0]
-  const [page, setPage] = useState('landing')
-  const [currentProblem, setCurrentProblem] = useState(initialProblem)
-  const [code, setCode] = useState(savedCode || PROBLEMS[0].starterCode)
-  const [terminalOutput, setTerminalOutput] = useState(['Waiting for execution...'])
-  const [executionData, setExecutionData] = useState({ variables: {}, stack: [], queue: [], memory: [] })
-  const [editorTheme, setEditorTheme] = useState(savedTheme || 'default')
+  const savedId = localStorage.getItem('problemId');
+  const savedCode = localStorage.getItem('code');
+  const savedTheme = localStorage.getItem('editorTheme');
+  const initialProblem = savedId ? PROBLEMS.find(p => p.id === savedId) || PROBLEMS[0] : PROBLEMS[0];
+  const [page, setPage] = useState('landing');
+  const [currentProblem, setCurrentProblem] = useState(initialProblem);
+  const [code, setCode] = useState(savedCode || PROBLEMS[0].starterCode);
+  const [terminalOutput, setTerminalOutput] = useState(['Waiting for execution...']);
+  const [executionData, setExecutionData] = useState({ variables: {}, stack: [], queue: [], memory: [] });
+  const [editorTheme, setEditorTheme] = useState(savedTheme || 'default');
 
   useEffect(() => {
-    localStorage.setItem('problemId', currentProblem.id)
+    localStorage.setItem('problemId', currentProblem.id);
   }, [currentProblem.id])
 
   useEffect(() => {
-    localStorage.setItem('code', code)
+    localStorage.setItem('code', code);
   }, [code])
 
   useEffect(() => {
-    localStorage.setItem('editorTheme', editorTheme)
+    localStorage.setItem('editorTheme', editorTheme);
   }, [editorTheme])
 
   useEffect(() => {
-    const path = window.location.pathname
-    const initialPage = path === '/ide' ? 'ide' : path === '/leaderboard' ? 'leaderboard' : path === '/auth' ? 'auth' : 'landing'
-    setPage(initialPage)
-    window.history.replaceState({ page: initialPage }, '')
+    const path = window.location.pathname;
+    const initialPage = path === '/ide' ? 'ide' : path === '/leaderboard' ? 'leaderboard' : path === '/auth' ? 'auth' : 'landing';
+    setPage(initialPage);
+    window.history.replaceState({ page: initialPage }, '');
 
     const handlePopState = (event) => {
       if (event.state && event.state.page) {
-        setPage(event.state.page)
+        setPage(event.state.page);
       } else {
-        setPage('landing')
+        setPage('landing');
       }
-    }
-    window.addEventListener('popstate', handlePopState)
+    };
+    window.addEventListener('popstate', handlePopState);
 
     return () => window.removeEventListener('popstate', handlePopState)
   }, [])
 
   const navigateTo = (p) => {
-    setPage(p)
-    window.history.pushState({ page: p }, '', p === 'landing' ? '/' : `/${p}`)
-    window.scrollTo(0, 0)
+    setPage(p);
+    window.history.pushState({ page: p }, '', p === 'landing' ? '/' : `/${p}`);
+    window.scrollTo(0, 0);
   }
 
   return (

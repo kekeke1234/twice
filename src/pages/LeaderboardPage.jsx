@@ -1,17 +1,17 @@
-import { useAuth } from '../context/AuthContext'
-import { useLanguage } from '../context/LanguageContext'
-import Navbar from '../landing/Navbar'
-import Footer from '../landing/Footer'
-import './LeaderboardPage.css'
+import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import Navbar from '../landing/Navbar';
+import Footer from '../landing/Footer';
+import './LeaderboardPage.css';
 
 export default function LeaderboardPage({ onNavigate }) {
-  const { user } = useAuth()
-  const { t } = useLanguage()
-  const users = JSON.parse(localStorage.getItem('users') || '[]')
+  const { user } = useAuth();
+  const { t } = useLanguage();
+  const users = JSON.parse(localStorage.getItem('users') || '[]');
   const rankings = users
     .map(u => ({ name: u.nickname, solved: u.solved, time: u.bestTime || '-' }))
     .sort((a, b) => b.solved - a.solved)
-    .map((entry, i) => ({ rank: i + 1, ...entry }))
+    .map((entry, i) => ({ rank: i + 1, ...entry }));
 
   return (
     <div className="leaderboard-page">
@@ -69,5 +69,5 @@ export default function LeaderboardPage({ onNavigate }) {
 
       <Footer />
     </div>
-  )
+  );
 }
