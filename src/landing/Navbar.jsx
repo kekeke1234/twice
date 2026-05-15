@@ -1,8 +1,10 @@
 import './Navbar.css';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function Navbar({ onStart, onHome, onLeaderboard, onAuth }) {
   const { language, setLanguage, t } = useLanguage();
+  const { user, logout } = useAuth();
 
   return (
     <nav className="navbar">
@@ -14,7 +16,11 @@ export default function Navbar({ onStart, onHome, onLeaderboard, onAuth }) {
         <ul className="nav-links">
           <li><a href="#features">{t('features')}</a></li>
           <li><a style={{ cursor: 'pointer' }} onClick={onLeaderboard}>{t('leaderboard')}</a></li>
-          <li><a style={{ cursor: 'pointer' }} onClick={onAuth}>{t('signIn')}</a></li>
+          {user ? (
+            <li><a style={{ cursor: 'pointer' }} onClick={logout}>{t('logout')}</a></li>
+          ) : (
+            <li><a style={{ cursor: 'pointer' }} onClick={onAuth}>{t('signIn')}</a></li>
+          )}
           <li><a href="https://github.com" target="_blank" rel="noreferrer">{t('github')}</a></li>
           <li>
             <select

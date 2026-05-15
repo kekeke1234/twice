@@ -229,9 +229,9 @@ function statementNeedsSemicolon(text, codeTokens, lastToken) {
     }
   }
 
-  if (trimmed.startsWith('printf ') || trimmed.startsWith('scanf ') ||
-      trimmed.startsWith('malloc ') || trimmed.startsWith('free ')) {
-    return true;
+  if (trimmed.startsWith('printf') || trimmed.startsWith('scanf') ||
+      trimmed.startsWith('malloc') || trimmed.startsWith('free')) {
+    return trimmed.endsWith(';') ? false : true;
   }
 
   if (trimmed.includes('=') && !trimmed.includes('==') && !trimmed.includes('!=') &&
@@ -324,13 +324,4 @@ function checkGlobalSyntax(code, errors) {
 
 export function formatGCCError(error) {
   return error.message;
-}
-
-export function getCompilerInfo() {
-  return {
-    name: 'GCC',
-    version: '11.4.0',
-    target: 'x86_64-linux-gnu',
-    compilerFlags: ['-Wall', '-Wextra', '-std=c11']
-  };
 }

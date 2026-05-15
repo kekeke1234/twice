@@ -12,6 +12,7 @@ const CURRICULUM = [
   { chapter: 'chapter4', desc: 'chapter4Desc', topics: 'chapter4Topics', problems: ['array-basics', 'pointer-basics', 'pointer-arithmetic'] },
   { chapter: 'chapter5', desc: 'chapter5Desc', topics: 'chapter5Topics', problems: ['struct-basics', 'malloc-basic'] },
   { chapter: 'chapter6', desc: 'chapter6Desc', topics: 'chapter6Topics', problems: ['linked-list', 'file-io'] },
+  { chapter: 'chapter7', desc: 'chapter7Desc', topics: 'chapter7Topics', problems: ['doubly-linked-list', 'stack-calculator', 'bubble-sort', 'quick-sort', 'memory-pool', 'hash-table', 'binary-tree'] },
 ];
 
 const COLOR_LABELS = {

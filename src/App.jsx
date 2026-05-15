@@ -4,6 +4,7 @@ import TopBar from './components/TopBar'
 import CodeEditor from './components/CodeEditor'
 import RightPanel from './components/RightPanel'
 import { PROBLEMS } from './problems'
+import { runCode as judge0RunCode, LANGUAGE_IDS } from './services/judge0Service'
 import './App.css'
 import LeaderboardPage from './pages/LeaderboardPage'
 import AuthPage from './pages/AuthPage'
@@ -87,40 +88,29 @@ function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProb
   }
 
   const runCode = async () => {
-    setTerminalOutput(['$ gcc main.c -o main', '$ ./main', '', 'Compiling...'])
-
-    const options = {
-      method: 'POST',
-      headers: {
-        'x-rapidapi-key': '177c7e9fe7mshc33b5d4a869679fp1976d7jsnbde38475596c',
-        'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        language_id: 52,
-        source_code: safeBtoa(code),
-        stdin: safeBtoa('')
-      })
-    }
+    setTerminalOutput(['$ compiling...', ''])
 
     try {
-      const response = await fetch('https://judge0-ce.p.rapidapi.com/submissions?base64_encoded=true&wait=true', options)
-      const result = await response.json()
+      const result = await judge0RunCode(code, 'c')
 
-      if (result.stdout) {
-        const output = safeAtob(result.stdout)
-        setTerminalOutput(prev => [...prev, output, '', t('success')])
-      } else if (result.compile_output) {
-        const error = safeAtob(result.compile_output)
-        setTerminalOutput(prev => [...prev, '', 'Compilation Error:', error])
-      } else if (result.stderr) {
-        const error = safeAtob(result.stderr)
-        setTerminalOutput(prev => [...prev, '', 'Runtime Error:', error])
-      } else {
-        setTerminalOutput(prev => [...prev, '', 'Unknown error occurred'])
+      switch (result.type) {
+        case 'success':
+          setTerminalOutput(prev => [...prev, result.output || '', t('success')])
+          break
+        case 'compile_error':
+          setTerminalOutput(prev => [...prev, '', '💥 컴파일 오류:', result.output])
+          break
+        case 'runtime_error':
+          setTerminalOutput(prev => [...prev, '', '⚡ 실행 오류:', result.output])
+          break
+        case 'timeout':
+          setTerminalOutput(prev => [...prev, '', '⏰ 시간 초과:', result.output])
+          break
+        default:
+          setTerminalOutput(prev => [...prev, '', '❌ 오류:', result.output])
       }
     } catch (error) {
-      setTerminalOutput(prev => [...prev, '', 'Connection error:', error.message])
+      setTerminalOutput(prev => [...prev, '', '🌐 연결 오류: 네트워크를 확인해주세요.'])
     }
   }
 
