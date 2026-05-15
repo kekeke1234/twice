@@ -12,6 +12,18 @@ import { LanguageProvider, useLanguage } from './context/LanguageContext'
 import { ThemeProvider } from './context/ThemeContext'
 import memoryChip from './assets/memory-chip.png'
 
+function safeBtoa(str) {
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+    return String.fromCharCode('0x' + p1)
+  }))
+}
+
+function safeAtob(str) {
+  return decodeURIComponent(Array.prototype.map.call(atob(str), (c) => {
+    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+  }).join(''))
+}
+
 function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProblem, terminalOutput, setTerminalOutput, executionData, setExecutionData, navigateTo }) {
   const { t } = useLanguage()
   const [rightPanelWidth, setRightPanelWidth] = useState(520)
@@ -86,8 +98,8 @@ function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProb
       },
       body: JSON.stringify({
         language_id: 52,
-        source_code: btoa(code),
-        stdin: btoa('')
+        source_code: safeBtoa(code),
+        stdin: safeBtoa('')
       })
     }
 
@@ -96,13 +108,13 @@ function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProb
       const result = await response.json()
 
       if (result.stdout) {
-        const output = atob(result.stdout)
+        const output = safeAtob(result.stdout)
         setTerminalOutput(prev => [...prev, output, '', t('success')])
       } else if (result.compile_output) {
-        const error = atob(result.compile_output)
+        const error = safeAtob(result.compile_output)
         setTerminalOutput(prev => [...prev, '', 'Compilation Error:', error])
       } else if (result.stderr) {
-        const error = atob(result.stderr)
+        const error = safeAtob(result.stderr)
         setTerminalOutput(prev => [...prev, '', 'Runtime Error:', error])
       } else {
         setTerminalOutput(prev => [...prev, '', 'Unknown error occurred'])
