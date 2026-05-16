@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../context/LanguageContext';
 import Navbar from '../landing/Navbar';
@@ -7,7 +8,17 @@ import './LeaderboardPage.css';
 export default function LeaderboardPage({ onNavigate }) {
   const { user } = useAuth();
   const { t } = useLanguage();
-  const users = JSON.parse(localStorage.getItem('users') || '[]');
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/users')
+      .then(r => r.json())
+      .then(data => { if (!cancelled) setUsers(data.users || []) })
+      .catch(() => { if (!cancelled) setUsers([]) });
+    return () => { cancelled = true };
+  }, []);
+
   const rankings = users
     .map(u => ({ name: u.nickname, solved: u.solved, time: u.bestTime || '-' }))
     .sort((a, b) => b.solved - a.solved)

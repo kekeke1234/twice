@@ -1,51 +1,68 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 
 const AuthContext = createContext(null);
+const STORAGE_KEY = 'currentUser';
 
-function getUsers() {
-  try { return JSON.parse(localStorage.getItem('users') || '[]') } catch { return []; }
+function readStoredUser() {
+  try {
+    const persistent = localStorage.getItem(STORAGE_KEY);
+    if (persistent) return { user: JSON.parse(persistent), remember: true };
+    const session = sessionStorage.getItem(STORAGE_KEY);
+    if (session) return { user: JSON.parse(session), remember: false };
+  } catch {}
+  return { user: null, remember: false };
 }
 
-function saveUsers(users) {
-  localStorage.setItem('users', JSON.stringify(users));
-}
-
-function getCurrentUser() {
-  try { return JSON.parse(localStorage.getItem('currentUser') || 'null') } catch { return null; }
+async function postJSON(url, body) {
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) return { ok: false, error: data.error || `Request failed (${res.status})` };
+  return { ok: true, data };
 }
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(getCurrentUser);
+  const initial = readStoredUser();
+  const [user, setUser] = useState(initial.user);
+  const rememberRef = useRef(initial.remember);
 
   useEffect(() => {
     if (user) {
-      localStorage.setItem('currentUser', JSON.stringify(user));
+      const value = JSON.stringify(user);
+      if (rememberRef.current) {
+        localStorage.setItem(STORAGE_KEY, value);
+        sessionStorage.removeItem(STORAGE_KEY);
+      } else {
+        sessionStorage.setItem(STORAGE_KEY, value);
+        localStorage.removeItem(STORAGE_KEY);
+      }
     } else {
-      localStorage.removeItem('currentUser');
+      localStorage.removeItem(STORAGE_KEY);
+      sessionStorage.removeItem(STORAGE_KEY);
     }
   }, [user]);
 
-  const signup = useCallback((email, password, nickname) => {
-    const users = getUsers();
-    if (users.find(u => u.email === email)) return { ok: false, error: 'Email already registered' };
-    if (users.find(u => u.nickname === nickname)) return { ok: false, error: 'Nickname already taken' };
-    const newUser = { email, password, nickname, solved: 0, bestTime: '-' };
-    users.push(newUser);
-    saveUsers(users);
-    setUser(newUser);
+  const signup = useCallback(async (email, password, nickname) => {
+    const result = await postJSON('/api/signup', { email, password, nickname });
+    if (!result.ok) return result;
+    rememberRef.current = false;
+    setUser(result.data.user);
     return { ok: true };
   }, []);
 
-  const login = useCallback((email, password) => {
-    const users = getUsers();
-    const found = users.find(u => u.email === email);
-    if (!found) return { ok: false, error: 'User not found' };
-    if (found.password !== password) return { ok: false, error: 'Wrong password' };
-    setUser(found);
+  const login = useCallback(async (email, password, remember = false) => {
+    const result = await postJSON('/api/login', { email, password });
+    if (!result.ok) return result;
+    rememberRef.current = remember;
+    setUser(result.data.user);
     return { ok: true };
   }, []);
 
   const logout = useCallback(() => {
+    rememberRef.current = false;
     setUser(null);
   }, []);
 

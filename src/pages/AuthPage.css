@@ -75,6 +75,24 @@
   border-color: var(--emerald-signal);
 }
 
+.auth-remember {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--steel-slate);
+  cursor: pointer;
+  user-select: none;
+}
+
+.auth-remember input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--emerald-signal);
+  cursor: pointer;
+}
+
 .auth-error {
   color: var(--danger-coral);
   font-size: 13px;

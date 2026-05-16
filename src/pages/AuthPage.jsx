@@ -4,22 +4,25 @@ import { useLanguage } from '../context/LanguageContext';
 import './AuthPage.css';
 
 export default function AuthPage({ onNavigate }) {
-  const { user, signup, login } = useAuth();
+  const { user, signup, login, logout } = useAuth();
   const { t } = useLanguage();
   const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [nickname, setNickname] = useState('');
+  const [remember, setRemember] = useState(false);
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     const fn = mode === 'signup' ? signup : login;
-    const params = mode === 'signup' ? [email, password, nickname] : [email, password];
-    const result = fn(...params);
-    if (!result.ok) {
-      setError(result.error);
+    const params = mode === 'signup' ? [email, password, nickname] : [email, password, remember];
+    try {
+      const result = await fn(...params);
+      if (!result.ok) setError(result.error);
+    } catch (err) {
+      setError(err.message || 'Network error');
     }
   };
 
@@ -32,6 +35,7 @@ export default function AuthPage({ onNavigate }) {
           <div className="auth-links">
             <button className="auth-btn" onClick={() => onNavigate('ide')}>{t('goToIDE')}</button>
             <button className="auth-btn secondary" onClick={() => onNavigate('leaderboard')}>{t('leaderboard')}</button>
+            <button className="auth-btn secondary" onClick={logout}>{t('logout')}</button>
           </div>
         </div>
       </div>
@@ -59,6 +63,13 @@ export default function AuthPage({ onNavigate }) {
 
           <label className="auth-label">{t('password')}</label>
           <input className="auth-input" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+
+          {mode === 'login' && (
+            <label className="auth-remember">
+              <input type="checkbox" checked={remember} onChange={e => setRemember(e.target.checked)} />
+              {t('rememberMe')}
+            </label>
+          )}
 
           {error && <p className="auth-error">{error}</p>}
 

@@ -5,10 +5,11 @@ import CodeEditor from './components/CodeEditor'
 import RightPanel from './components/RightPanel'
 import { PROBLEMS } from './problems'
 import { runCode as judge0RunCode, LANGUAGE_IDS } from './services/judge0Service'
+import { saveUserCode, loadUserCode, saveUserCodeLocal, loadUserCodeLocal } from './services/userCodeService'
 import './App.css'
 import LeaderboardPage from './pages/LeaderboardPage'
 import AuthPage from './pages/AuthPage'
-import { AuthProvider } from './context/AuthContext'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import { LanguageProvider, useLanguage } from './context/LanguageContext'
 import { ThemeProvider } from './context/ThemeContext'
 import memoryChip from './assets/memory-chip.png'
@@ -27,6 +28,7 @@ function safeAtob(str) {
 
 function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProblem, terminalOutput, setTerminalOutput, executionData, setExecutionData, navigateTo }) {
   const { t } = useLanguage()
+  const { user } = useAuth()
   const [rightPanelWidth, setRightPanelWidth] = useState(520)
   const [bottomHeight, setBottomHeight] = useState(280)
   const [isResizingH, setIsResizingH] = useState(false)
@@ -77,11 +79,28 @@ function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProb
     document.body.style.userSelect = 'none'
   }
 
+  useEffect(() => {
+    if (!user || !currentProblem) return
+    const loadCode = async () => {
+      const saved = loadUserCodeLocal(user.email, currentProblem.id)
+      if (saved) {
+        setCode(saved)
+      }
+    }
+    loadCode()
+  }, [user, currentProblem?.id])
+
+  useEffect(() => {
+    if (!user || !currentProblem || !code) return
+    saveUserCodeLocal(user.email, currentProblem.id, code)
+  }, [user, currentProblem?.id, code])
+
   const selectProblem = (id) => {
     const p = PROBLEMS.find(p => p.id === id)
     if (p) {
       setCurrentProblem(p)
-      setCode(p.starterCode)
+      const savedCode = user ? loadUserCodeLocal(user.email, id) : null
+      setCode(savedCode || p.starterCode)
       setTerminalOutput([t('waitingForExecution')])
       setExecutionData({ variables: {}, stack: [], queue: [] })
     }
