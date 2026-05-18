@@ -82,3 +82,19 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`twice server listening on http://localhost:${PORT}`);
 });
+
+// api/server.js 예시 (Express 사용 시)
+   const express = require('express');
+   const cors = require('cors');
+   const app = express();
+
+   app.use(cors({
+     origin: 'https://your-netlify-app-name.netlify.app', // 본인의 Netlify 주소
+     credentials: true
+   }));
+
+   app.get('/api/users', (req, res) => {
+     res.json({ message: "백엔드 연결 성공!" });
+   });
+
+   module.exports = app;
