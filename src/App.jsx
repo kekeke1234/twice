@@ -26,15 +26,15 @@ function safeAtob(str) {
   }).join(''))
 }
 
-function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProblem, terminalOutput, setTerminalOutput, executionData, setExecutionData, navigateTo }) {
-  const { t } = useLanguage()
-  const { user } = useAuth()
-  const [rightPanelWidth, setRightPanelWidth] = useState(520)
-  const [bottomHeight, setBottomHeight] = useState(280)
-  const [isResizingH, setIsResizingH] = useState(false)
-  const [isResizingV, setIsResizingV] = useState(false)
-  const startY = useRef(0)
-  const startX = useRef(0)
+function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProblem, terminalOutput, setTerminalOutput, executionData, setExecutionData, navigateTo, hasError, setHasError, showHint, setShowHint, showDictionary, setShowDictionary, onInsertCode }) {
+	const { t } = useLanguage()
+	const { user } = useAuth()
+	const [rightPanelWidth, setRightPanelWidth] = useState(520)
+	const [bottomHeight, setBottomHeight] = useState(280)
+	const [isResizingH, setIsResizingH] = useState(false)
+	const [isResizingV, setIsResizingV] = useState(false)
+	const startY = useRef(0)
+	const startX = useRef(0)
 
   const handleMouseMove = useCallback((e) => {
     if (isResizingH) {
@@ -103,11 +103,15 @@ function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProb
       setCode(savedCode || p.starterCode)
       setTerminalOutput([t('waitingForExecution')])
       setExecutionData({ variables: {}, stack: [], queue: [] })
+      setHasError(false)
+      setShowHint(false)
     }
   }
 
   const runCode = async () => {
     setTerminalOutput(['$ compiling...', ''])
+    setHasError(false)
+    setShowHint(false)
 
     try {
       const result = await judge0RunCode(code, 'c')
@@ -118,12 +122,15 @@ function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProb
           break
         case 'compile_error':
           setTerminalOutput(prev => [...prev, '', '💥 컴파일 오류:', result.output])
+          setHasError(true)
           break
         case 'runtime_error':
           setTerminalOutput(prev => [...prev, '', '⚡ 실행 오류:', result.output])
+          setHasError(true)
           break
         case 'timeout':
           setTerminalOutput(prev => [...prev, '', '⏰ 시간 초과:', result.output])
+          setHasError(true)
           break
         default:
           setTerminalOutput(prev => [...prev, '', '❌ 오류:', result.output])
@@ -142,6 +149,9 @@ function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProb
         onAuth={() => navigateTo('auth')}
         currentProblem={currentProblem}
         onSelectProblem={selectProblem}
+        onInsertCode={onInsertCode}
+        showDictionary={showDictionary}
+        setShowDictionary={setShowDictionary}
       />
       <div className="workspace">
         <CodeEditor code={code} onChange={setCode} theme={editorTheme} />
@@ -151,6 +161,9 @@ function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProb
           terminalOutput={terminalOutput}
           executionData={executionData}
           width={rightPanelWidth}
+          hasError={hasError}
+          showHint={showHint}
+          setShowHint={setShowHint}
         />
       </div>
       <div className="resize-handle-h" onMouseDown={startResizeH} />
@@ -214,6 +227,14 @@ export default function App() {
   const [terminalOutput, setTerminalOutput] = useState(['Waiting for execution...']);
   const [executionData, setExecutionData] = useState({ variables: {}, stack: [], queue: [], memory: [] });
   const [editorTheme, setEditorTheme] = useState(savedTheme || 'default');
+  const [hasError, setHasError] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const [showDictionary, setShowDictionary] = useState(false);
+
+  const handleInsertCode = (code) => {
+    setCode(prev => prev + '\n' + code);
+    setShowDictionary(false);
+  }
 
   useEffect(() => {
     localStorage.setItem('problemId', currentProblem.id);
@@ -270,6 +291,13 @@ export default function App() {
           executionData={executionData}
           setExecutionData={setExecutionData}
           navigateTo={navigateTo}
+          hasError={hasError}
+          setHasError={setHasError}
+          showHint={showHint}
+          setShowHint={setShowHint}
+          showDictionary={showDictionary}
+          setShowDictionary={setShowDictionary}
+          onInsertCode={handleInsertCode}
         />
       ) : page === 'leaderboard' ? (
         <LeaderboardPage onNavigate={navigateTo} />

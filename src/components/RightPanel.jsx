@@ -1,8 +1,9 @@
 import { useLanguage } from '../context/LanguageContext';
 import './RightPanel.css';
 
-export default function RightPanel({ problem, terminalOutput, width }) {
+export default function RightPanel({ problem, terminalOutput, width, hasError, showHint, setShowHint }) {
   const { t } = useLanguage();
+
   return (
     <div className="right-panel" style={{ width }}>
       <div className="panel-section problem-section">
@@ -25,6 +26,17 @@ export default function RightPanel({ problem, terminalOutput, width }) {
               {line}
             </div>
           ))}
+          {hasError && !showHint && problem.hintKey && (
+            <button className="hint-button" onClick={() => setShowHint(true)}>
+              💡 {t('showHint')}
+            </button>
+          )}
+          {showHint && problem.hintKey && (
+            <div className="hint-content">
+              <span className="hint-label">💡 {t('hint')}:</span>
+              <span>{t(problem.hintKey)}</span>
+            </div>
+          )}
           <div className="term-line cursor">_</div>
         </div>
       </div>

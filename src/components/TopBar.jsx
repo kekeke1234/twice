@@ -3,6 +3,7 @@ import { useLanguage } from '../context/LanguageContext'
 import { useTheme } from '../context/ThemeContext'
 import { useAuth } from '../context/AuthContext'
 import { PROBLEMS } from '../problems'
+import DictionaryModal from './DictionaryModal'
 import './TopBar.css'
 
 const CURRICULUM = [
@@ -31,7 +32,7 @@ const COLOR_LABELS = {
   '--soft-purple': 'Purple Accent',
 };
 
-export default function TopBar({ onHome, onRun, onLeaderboard, onAuth, currentProblem, onSelectProblem }) {
+export default function TopBar({ onHome, onRun, onLeaderboard, onAuth, currentProblem, onSelectProblem, onInsertCode, showDictionary, setShowDictionary }) {
   const { t } = useLanguage();
   const { user, logout } = useAuth();
   const { presets, activePreset, applyPreset, updateColor, resetTheme, currentColors } = useTheme();
@@ -73,6 +74,14 @@ export default function TopBar({ onHome, onRun, onLeaderboard, onAuth, currentPr
           </span>
           <span className="problems-label">{t('curriculum')}</span>
         </button>
+        <button
+          className={`dict-btn ${showDictionary ? 'active' : ''}`}
+          onClick={() => setShowDictionary(!showDictionary)}
+          title={t('cDictionary')}
+        >
+          <span className="dict-icon">📖</span>
+          <span className="dict-label">{t('dict')}</span>
+        </button>
       </div>
       {showProblemList && <div className="overlay" onClick={() => setShowProblemList(false)} />}
       {showThemePanel && <div className="overlay" onClick={() => setShowThemePanel(false)} />}
@@ -85,38 +94,35 @@ export default function TopBar({ onHome, onRun, onLeaderboard, onAuth, currentPr
           <button className="drawer-close" onClick={() => setShowProblemList(false)}>×</button>
         </div>
         <div className="problem-drawer-content">
-          {CURRICULUM.map((item, index) => {
-            const chapterProblems = PROBLEMS.filter(p => item.problems.includes(p.id))
-            return (
-              <div key={index} className="curriculum-chapter">
-                <div className="curriculum-chapter-header" onClick={() => toggleChapter(index)}>
-                  <span className="curriculum-chapter-num">{index + 1}</span>
-                  <div className="curriculum-chapter-info">
-                    <span className="curriculum-chapter-title">{t(item.chapter)}</span>
-                    <span className="curriculum-chapter-desc">{t(item.desc)}</span>
-                  </div>
-                  <span className={`expand-icon ${expandedChapter === index ? 'expanded' : ''}`}>▶</span>
+          {CURRICULUM.map((item, index) => (
+            <div key={index} className="curriculum-chapter">
+              <div className="curriculum-chapter-header" onClick={() => toggleChapter(index)}>
+                <span className="curriculum-chapter-num">{index + 1}</span>
+                <div className="curriculum-chapter-info">
+                  <span className="curriculum-chapter-title">{t(item.chapter)}</span>
+                  <span className="curriculum-chapter-desc">{t(item.desc)}</span>
                 </div>
-                {expandedChapter === index && (
-                  <div className="curriculum-problems">
-                    {chapterProblems.map(p => (
-                      <div
-                        key={p.id}
-                        className={`curriculum-problem-item ${p.id === currentProblem?.id ? 'active' : ''}`}
-                        onClick={() => {
-                          onSelectProblem(p.id);
-                          setShowProblemList(false);
-                        }}
-                      >
-                        <span className="problem-icon">▸</span>
-                        <span className="problem-item-title">{p.titleKey ? t(p.titleKey) : p.title}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <span className={`expand-icon ${expandedChapter === index ? 'expanded' : ''}`}>▶</span>
               </div>
-            );
-          })}
+              {expandedChapter === index && (
+                <div className="curriculum-problems">
+                  {PROBLEMS.filter(p => item.problems.includes(p.id)).map(p => (
+                    <div
+                      key={p.id}
+                      className={`curriculum-problem-item ${p.id === currentProblem?.id ? 'active' : ''}`}
+                      onClick={() => {
+                        onSelectProblem(p.id);
+                        setShowProblemList(false);
+                      }}
+                    >
+                      <span className="problem-icon">▸</span>
+                      <span className="problem-item-title">{p.titleKey ? t(p.titleKey) : p.title}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </div>
       <div className={`theme-drawer ${showThemePanel ? 'open' : ''}`}>
@@ -168,6 +174,11 @@ export default function TopBar({ onHome, onRun, onLeaderboard, onAuth, currentPr
           </div>
         </div>
       </div>
+      <DictionaryModal
+        isOpen={showDictionary}
+        onClose={() => setShowDictionary(false)}
+        onInsertCode={onInsertCode}
+      />
     </div>
   )
 }

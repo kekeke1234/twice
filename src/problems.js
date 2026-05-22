@@ -3,6 +3,7 @@ export const PROBLEMS = [
     id: 'hello-world',
     titleKey: 'p1Title',
     descKey: 'p1Desc',
+    hintKey: 'p1Hint',
     starterCode: `#include <stdio.h>
 
 int main() {
@@ -15,6 +16,7 @@ int main() {
     id: 'variables',
     titleKey: 'p2Title',
     descKey: 'p2Desc',
+    hintKey: 'p2Hint',
     starterCode: `#include <stdio.h>
 
 int main() {
@@ -31,6 +33,7 @@ int main() {
     id: 'operators',
     titleKey: 'p3Title',
     descKey: 'p3Desc',
+    hintKey: 'p3Hint',
     starterCode: `#include <stdio.h>
 
 int main() {
@@ -51,6 +54,7 @@ int main() {
     id: 'if-else',
     titleKey: 'p4Title',
     descKey: 'p4Desc',
+    hintKey: 'p4Hint',
     starterCode: `#include <stdio.h>
 
 int main() {
@@ -65,6 +69,7 @@ int main() {
     id: 'switch-case',
     titleKey: 'p5Title',
     descKey: 'p5Desc',
+    hintKey: 'p5Hint',
     starterCode: `#include <stdio.h>
 
 int main() {
@@ -80,6 +85,7 @@ int main() {
     id: 'for-loop',
     titleKey: 'p6Title',
     descKey: 'p6Desc',
+    hintKey: 'p6Hint',
     starterCode: `#include <stdio.h>
 
 int main() {
@@ -92,6 +98,7 @@ int main() {
     id: 'while-loop',
     titleKey: 'p7Title',
     descKey: 'p7Desc',
+    hintKey: 'p7Hint',
     starterCode: `#include <stdio.h>
 
 int main() {
@@ -106,6 +113,7 @@ int main() {
     id: 'function-basic',
     titleKey: 'p8Title',
     descKey: 'p8Desc',
+    hintKey: 'p8Hint',
     starterCode: `#include <stdio.h>
 
 // Declare a function that returns the square of a number
@@ -123,6 +131,7 @@ int main() {
     id: 'recursion',
     titleKey: 'p9Title',
     descKey: 'p9Desc',
+    hintKey: 'p9Hint',
     starterCode: `#include <stdio.h>
 
 // Implement recursive factorial function
@@ -142,6 +151,7 @@ int main() {
     id: 'array-basics',
     titleKey: 'p10Title',
     descKey: 'p10Desc',
+    hintKey: 'p10Hint',
     starterCode: `#include <stdio.h>
 
 int main() {
@@ -156,6 +166,7 @@ int main() {
     id: 'pointer-basics',
     titleKey: 'p11Title',
     descKey: 'p11Desc',
+    hintKey: 'p11Hint',
     starterCode: `#include <stdio.h>
 
 int main() {
@@ -172,6 +183,7 @@ int main() {
     id: 'pointer-arithmetic',
     titleKey: 'p12Title',
     descKey: 'p12Desc',
+    hintKey: 'p12Hint',
     starterCode: `#include <stdio.h>
 
 int main() {
@@ -187,6 +199,7 @@ int main() {
     id: 'struct-basics',
     titleKey: 'p13Title',
     descKey: 'p13Desc',
+    hintKey: 'p13Hint',
     starterCode: `#include <stdio.h>
 
 struct Student {
@@ -207,6 +220,7 @@ int main() {
     id: 'malloc-basic',
     titleKey: 'p14Title',
     descKey: 'p14Desc',
+    hintKey: 'p14Hint',
     starterCode: `#include <stdio.h>
 #include <stdlib.h>
 
@@ -226,6 +240,7 @@ int main() {
     id: 'linked-list',
     titleKey: 'p15Title',
     descKey: 'p15Desc',
+    hintKey: 'p15Hint',
     starterCode: `#include <stdio.h>
 #include <stdlib.h>
 
@@ -245,6 +260,7 @@ int main() {
     id: 'file-io',
     titleKey: 'p16Title',
     descKey: 'p16Desc',
+    hintKey: 'p16Hint',
     starterCode: `#include <stdio.h>
 
 int main() {
@@ -258,6 +274,7 @@ int main() {
     id: 'doubly-linked-list',
     titleKey: 'p17Title',
     descKey: 'p17Desc',
+    hintKey: 'p17Hint',
     starterCode: `#include <stdio.h>
 #include <stdlib.h>
 
@@ -279,6 +296,7 @@ int main() {
     id: 'stack-calculator',
     titleKey: 'p18Title',
     descKey: 'p18Desc',
+    hintKey: 'p18Hint',
     starterCode: `#include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -305,6 +323,7 @@ int main() {
     id: 'bubble-sort',
     titleKey: 'p19Title',
     descKey: 'p19Desc',
+    hintKey: 'p19Hint',
     starterCode: `#include <stdio.h>
 
 void bubbleSort(int arr[], int n) {
@@ -326,6 +345,7 @@ int main() {
     id: 'quick-sort',
     titleKey: 'p20Title',
     descKey: 'p20Desc',
+    hintKey: 'p20Hint',
     starterCode: `#include <stdio.h>
 
 void quickSort(int arr[], int low, int high) {
@@ -351,6 +371,7 @@ int main() {
     id: 'memory-pool',
     titleKey: 'p21Title',
     descKey: 'p21Desc',
+    hintKey: 'p21Hint',
     starterCode: `#include <stdio.h>
 #include <stdlib.h>
 
@@ -378,6 +399,7 @@ int main() {
     id: 'hash-table',
     titleKey: 'p22Title',
     descKey: 'p22Desc',
+    hintKey: 'p22Hint',
     starterCode: `#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -415,6 +437,7 @@ int main() {
     id: 'recursive-file-search',
     titleKey: 'p23Title',
     descKey: 'p23Desc',
+    hintKey: 'p23Hint',
     starterCode: `#include <stdio.h>
 
 // Note: This won't work in online compiler
@@ -441,6 +464,7 @@ int main() {
     id: 'binary-tree',
     titleKey: 'p24Title',
     descKey: 'p24Desc',
+    hintKey: 'p24Hint',
     starterCode: `#include <stdio.h>
 #include <stdlib.h>
 

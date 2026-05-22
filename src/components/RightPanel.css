@@ -311,3 +311,40 @@
   from { transform: scale(0.8); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
+
+.hint-button {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background-color: rgba(0, 217, 146, 0.1);
+  border: 1px solid var(--emerald-signal);
+  border-radius: 4px;
+  color: var(--emerald-signal);
+  font-family: var(--font-code);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hint-button:hover {
+  background-color: rgba(0, 217, 146, 0.2);
+}
+
+.hint-content {
+  margin-top: 12px;
+  padding: 12px;
+  background-color: rgba(0, 217, 146, 0.1);
+  border: 1px solid var(--emerald-signal);
+  border-radius: 4px;
+  color: var(--snow-white);
+  font-family: var(--font-code);
+  font-size: 13px;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hint-label {
+  color: var(--emerald-signal);
+  font-weight: bold;
+}

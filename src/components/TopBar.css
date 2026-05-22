@@ -151,6 +151,39 @@
   background-color: rgba(0, 217, 146, 0.2);
 }
 
+.dict-btn {
+  background-color: var(--carbon-surface);
+  color: var(--snow-white);
+  border: 1px solid var(--warm-charcoal);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dict-btn:hover {
+  border-color: var(--emerald-signal);
+  box-shadow: 0 0 12px rgba(0, 217, 146, 0.3);
+}
+
+.dict-btn.active {
+  background-color: rgba(0, 217, 146, 0.15);
+  border-color: var(--emerald-signal);
+}
+
+.dict-icon {
+  font-size: 16px;
+}
+
+.dict-label {
+  letter-spacing: 0.5px;
+}
+
 .theme-color-btn {
   background-color: var(--carbon-surface);
   color: var(--snow-white);
