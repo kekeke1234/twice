@@ -21,6 +21,25 @@ const DEFAULT_THEME = {
 
 const PRESET_THEMES = {
   default: { name: 'Emerald Dark', colors: { ...DEFAULT_THEME } },
+  light: {
+    name: 'Light Mode',
+    colors: {
+      '--emerald-signal': '#10b981',
+      '--voltagent-mint': '#34d399',
+      '--abyss-black': '#f8fafc',
+      '--carbon-surface': '#ffffff',
+      '--warm-charcoal': '#e2e8f0',
+      '--snow-white': '#1e293b',
+      '--pure-white': '#0f172a',
+      '--warm-parchment': '#64748b',
+      '--steel-slate': '#94a3b8',
+      '--success-emerald': '#22c55e',
+      '--warning-amber': '#f59e0b',
+      '--danger-coral': '#ef4444',
+      '--info-teal': '#06b6d4',
+      '--soft-purple': '#8b5cf6',
+    }
+  },
   midnight: {
     name: 'Midnight Blue',
     colors: {

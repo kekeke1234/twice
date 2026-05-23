@@ -1,10 +1,20 @@
 import './Navbar.css';
 import { useLanguage } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Navbar({ onStart, onHome, onLeaderboard, onAuth }) {
   const { language, setLanguage, t } = useLanguage();
   const { user, logout } = useAuth();
+  const { activePreset, applyPreset } = useTheme();
+
+  const toggleTheme = () => {
+    if (activePreset === 'light') {
+      applyPreset('default');
+    } else {
+      applyPreset('light');
+    }
+  };
 
   return (
     <nav className="navbar">
@@ -22,6 +32,22 @@ export default function Navbar({ onStart, onHome, onLeaderboard, onAuth }) {
             <li><a style={{ cursor: 'pointer' }} onClick={onAuth}>{t('signIn')}</a></li>
           )}
           <li><a href="https://github.com" target="_blank" rel="noreferrer">{t('github')}</a></li>
+          <li>
+            <button
+              onClick={toggleTheme}
+              style={{
+                background: 'var(--carbon-surface)',
+                color: 'var(--snow-white)',
+                border: '1px solid var(--warm-charcoal)',
+                borderRadius: '4px',
+                padding: '4px 12px',
+                cursor: 'pointer',
+                fontSize: '12px'
+              }}
+            >
+              {activePreset === 'light' ? '🌙' : '☀️'}
+            </button>
+          </li>
           <li>
             <select
               value={language}
