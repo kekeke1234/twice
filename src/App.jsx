@@ -5,6 +5,7 @@ import CodeEditor from './components/CodeEditor'
 import RightPanel from './components/RightPanel'
 import { PROBLEMS } from './problems'
 import { runCode as judge0RunCode, LANGUAGE_IDS } from './services/judge0Service'
+import { instrumentStackQueueCode, parseStackQueueOutput } from './services/stackQueueInstrumenter'
 import { saveUserCode, loadUserCode, saveUserCodeLocal, loadUserCodeLocal } from './services/userCodeService'
 import './App.css'
 import LeaderboardPage from './pages/LeaderboardPage'
@@ -99,10 +100,12 @@ function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProb
     const p = PROBLEMS.find(p => p.id === id)
     if (p) {
       setCurrentProblem(p)
-      const savedCode = user ? loadUserCodeLocal(user.email, id) : null
-      setCode(savedCode || p.starterCode)
+      const newCode = p.starterCode;
+      setCode(newCode)
+      localStorage.setItem('code', newCode);
+      localStorage.setItem('problemId', id);
       setTerminalOutput([t('waitingForExecution')])
-      setExecutionData({ variables: {}, stack: [], queue: [] })
+      setExecutionData({ variables: {}, stack: [], queue: [], memory: [] })
       setHasError(false)
       setShowHint(false)
     }
@@ -114,11 +117,18 @@ function IDEContent({ editorTheme, code, setCode, currentProblem, setCurrentProb
     setShowHint(false)
 
     try {
-      const result = await judge0RunCode(code, 'c')
+      console.log('code being sent to judge0:', code.substring(0, 400));
+      const result = await judge0RunCode(code, 'c');
+
+      if (result.type === 'success') {
+        const { stack, queue } = parseStackQueueOutput(result.output);
+        console.log('SUCCESS - queue data:', queue);
+        setTerminalOutput(prev => [...prev, result.output || '', t('success')]);
+        setExecutionData({ variables: {}, stack: [], queue: queue, memory: [] });
+      }
 
       switch (result.type) {
         case 'success':
-          setTerminalOutput(prev => [...prev, result.output || '', t('success')])
           break
         case 'compile_error':
           setTerminalOutput(prev => [...prev, '', '💥 컴파일 오류:', result.output])
@@ -223,7 +233,12 @@ export default function App() {
   const initialProblem = savedId ? PROBLEMS.find(p => p.id === savedId) || PROBLEMS[0] : PROBLEMS[0];
   const [page, setPage] = useState('landing');
   const [currentProblem, setCurrentProblem] = useState(initialProblem);
-  const [code, setCode] = useState(savedCode || PROBLEMS[0].starterCode);
+  const [code, setCode] = useState(() => {
+    if (initialProblem.starterCode !== savedCode) {
+      return initialProblem.starterCode;
+    }
+    return savedCode || PROBLEMS[0].starterCode;
+  });
   const [terminalOutput, setTerminalOutput] = useState(['Waiting for execution...']);
   const [executionData, setExecutionData] = useState({ variables: {}, stack: [], queue: [], memory: [] });
   const [editorTheme, setEditorTheme] = useState(savedTheme || 'default');

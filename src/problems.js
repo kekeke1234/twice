@@ -293,10 +293,46 @@ int main() {
 }`,
   },
   {
-    id: 'stack-calculator',
+    id: 'queue-basics',
     titleKey: 'p18Title',
     descKey: 'p18Desc',
     hintKey: 'p18Hint',
+    starterCode: `#include <stdio.h>
+
+#define MAX 100
+
+int queue[MAX];
+int front = 0;
+int rear = -1;
+
+void enqueue(int val) {
+    rear++;
+    queue[rear] = val;
+    printf("[Q:%d]", val);
+}
+
+int dequeue() {
+    int val = queue[front];
+    front++;
+    printf("[D:%d]", val);
+    return val;
+}
+
+int main() {
+    enqueue(10);
+    enqueue(20);
+    enqueue(30);
+    printf("%d ", dequeue());
+    enqueue(40);
+    printf("%d %d %d", dequeue(), dequeue(), dequeue());
+    return 0;
+}`,
+  },
+  {
+    id: 'stack-calculator',
+    titleKey: 'p19Title',
+    descKey: 'p19Desc',
+    hintKey: 'p19Hint',
     starterCode: `#include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -321,9 +357,9 @@ int main() {
   },
   {
     id: 'bubble-sort',
-    titleKey: 'p19Title',
-    descKey: 'p19Desc',
-    hintKey: 'p19Hint',
+    titleKey: 'p20Title',
+    descKey: 'p20Desc',
+    hintKey: 'p20Hint',
     starterCode: `#include <stdio.h>
 
 void bubbleSort(int arr[], int n) {
@@ -343,9 +379,9 @@ int main() {
   },
   {
     id: 'quick-sort',
-    titleKey: 'p20Title',
-    descKey: 'p20Desc',
-    hintKey: 'p20Hint',
+    titleKey: 'p21Title',
+    descKey: 'p21Desc',
+    hintKey: 'p21Hint',
     starterCode: `#include <stdio.h>
 
 void quickSort(int arr[], int low, int high) {
@@ -369,9 +405,9 @@ int main() {
   },
   {
     id: 'memory-pool',
-    titleKey: 'p21Title',
-    descKey: 'p21Desc',
-    hintKey: 'p21Hint',
+    titleKey: 'p22Title',
+    descKey: 'p22Desc',
+    hintKey: 'p22Hint',
     starterCode: `#include <stdio.h>
 #include <stdlib.h>
 
@@ -397,9 +433,9 @@ int main() {
   },
   {
     id: 'hash-table',
-    titleKey: 'p22Title',
-    descKey: 'p22Desc',
-    hintKey: 'p22Hint',
+    titleKey: 'p23Title',
+    descKey: 'p23Desc',
+    hintKey: 'p23Hint',
     starterCode: `#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -435,9 +471,9 @@ int main() {
   },
   {
     id: 'recursive-file-search',
-    titleKey: 'p23Title',
-    descKey: 'p23Desc',
-    hintKey: 'p23Hint',
+    titleKey: 'p24Title',
+    descKey: 'p24Desc',
+    hintKey: 'p24Hint',
     starterCode: `#include <stdio.h>
 
 // Note: This won't work in online compiler
@@ -462,9 +498,9 @@ int main() {
   },
   {
     id: 'binary-tree',
-    titleKey: 'p24Title',
-    descKey: 'p24Desc',
-    hintKey: 'p24Hint',
+    titleKey: 'p25Title',
+    descKey: 'p25Desc',
+    hintKey: 'p25Hint',
     starterCode: `#include <stdio.h>
 #include <stdlib.h>
 
